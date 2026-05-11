@@ -24,6 +24,7 @@ from scanner.ibkr_client import (
     runtime_diagnostics,
     summarize_chain,
 )
+from scanner.hv7_trigger import apply_hv7_trigger_to_settings
 from scanner.mock_data import build_mock_chain
 from scanner.models import CalendarCandidate, RegimeSnapshot, ScanResult, ScanSettings
 from scanner.option_chain import scan_from_quote_fetcher
@@ -87,11 +88,17 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
             help="Fetch calls as well as puts so Triple Calendar expected move uses ATM call mid + put mid.",
         )
     hv7_trigger_confirmed = defaults.hv7_trigger_confirmed
+    hv7_auto_detect_trigger = defaults.hv7_auto_detect_trigger
     if strategy_key == "hv7_bwb":
+        hv7_auto_detect_trigger = st.sidebar.checkbox(
+            "Auto-detect HV7 trigger live",
+            value=defaults.hv7_auto_detect_trigger,
+            help="In live IBKR scans, check index same-day move and VIX automatically.",
+        )
         hv7_trigger_confirmed = st.sidebar.checkbox(
-            "HV7 trigger confirmed",
+            "Manual HV7 trigger fallback",
             value=defaults.hv7_trigger_confirmed,
-            help="Confirm same-day index drop and VIX threshold before treating HV7 as actionable.",
+            help="Used for mock/cache scans or when live auto-detection is unavailable.",
         )
 
     st.sidebar.header("DTE / Strike window")
@@ -166,6 +173,7 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
         strategy=strategy_key,
         triple_require_full_straddle=bool(triple_require_full_straddle),
         hv7_trigger_confirmed=bool(hv7_trigger_confirmed),
+        hv7_auto_detect_trigger=bool(hv7_auto_detect_trigger),
         w_theta_debit=float(w_theta), w_range_debit=float(w_range), w_days_to_target=float(w_days),
         w_vega_debit=float(w_vega), w_spread_penalty=float(w_spread),
         cache_max_age_minutes=int(cache_minutes),
@@ -353,6 +361,18 @@ def run_live_scan(settings: ScanSettings, connection: dict[str, Any], regime: Re
         underlying_price = resolve_underlying_price(ibkr_price, connection.get("manual_underlying_price"))
         if underlying_price is None:
             st.warning("No underlying price; strike filtering will fall back to a centred slice.")
+
+        if settings.strategy == "hv7_bwb" and settings.hv7_auto_detect_trigger:
+            status_box.info("checking HV7 trigger from underlying and VIX")
+            snapshot = client.detect_hv7_trigger(settings.symbol, settings.exchange)
+            settings = apply_hv7_trigger_to_settings(settings, snapshot)
+            if snapshot.available:
+                if snapshot.triggered:
+                    status_box.success(snapshot.reason)
+                else:
+                    status_box.warning(snapshot.reason)
+            else:
+                status_box.warning(f"{snapshot.reason}; using manual HV7 fallback.")
 
         rights = rights_for(settings.strategy, settings)
         expiries = sorted(chain.expirations)

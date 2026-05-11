@@ -245,22 +245,23 @@ candidates only; adjustment workflows remain documented guidance.
 ### Scanner mapping
 - `strategies/hv7.py`
 - 3 legs: put broken-wing butterfly using 50 / 35 / 20 handles.
-- Sidebar `HV7 trigger confirmed` checkbox records whether the external SPX/RUT down-move + VIX trigger is met.
-- If the trigger is not checked, the candidate is still shown for modelling but a warning is emitted.
+- Live scans auto-detect the trigger from the underlying same-day move and VIX.
+- Mock/cache scans, or live scans where data is unavailable, use the manual fallback checkbox.
+- If the trigger is not confirmed, the candidate is still shown for modelling but a warning is emitted.
 
 ### FlyDiagonal
 
 **Source**: docs/strategies_html/FlyDiagonal.html
 
-- Multi-leg income structure combining a call broken-wing butterfly with a put diagonal / time spread.
+- Multi-leg income structure combining an ATM iron fly with OTM put and call time spreads.
 - Primary vehicle: SPX. Alternatives: SPY, QQQ, RUT, IWM.
 - Reference time frame: roughly 4-14 DTE.
-- Base structure: call BWB above spot plus put diagonal below spot. Advanced variant can expand to an 8-leg structure.
+- Implemented structure: ATM 50-point-wide iron fly plus OTM put and call time spreads 50 points beyond the iron-fly wings.
 - Profit target is usually 10-15%, with a quick-exit rule for early 4%+ gains.
 
 ### Scanner mapping
 - `strategies/fly_diagonal.py`
-- 5-leg base variant: 3-leg call BWB plus 2-leg put diagonal.
-- Default call BWB handles: 30 / 20 / 10 delta.
-- Default put diagonal: 30-delta front short put and back long put about 10 points lower.
-- The advanced 8-leg variant is preserved in the source reference but not automated yet.
+- 8-leg variant: long put wing, short ATM put, short ATM call, long call wing, OTM put time spread, OTM call time spread.
+- Default iron-fly width: 50 points.
+- Default OTM time-spread anchor: 50 points beyond each long iron-fly wing.
+- Builder searches a small strike grid around the anchors and prefers theta-positive, delta-neutral candidates.

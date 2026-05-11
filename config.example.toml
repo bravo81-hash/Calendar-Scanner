@@ -47,9 +47,14 @@ a14_dte_tolerance = 2
 hv7_min_dte = 7
 hv7_max_dte = 14
 hv7_trigger_confirmed = false
+hv7_auto_detect_trigger = true
 fly_short_dte = 8
 fly_long_dte = 15
 fly_dte_tolerance = 3
+fly_iron_fly_width = 50.0
+fly_time_spread_offset = 50.0
+fly_dynamic_step = 5.0
+fly_dynamic_steps = 2
 
 # Quote cache freshness (minutes) before a quote is considered stale
 cache_max_age_minutes = 30

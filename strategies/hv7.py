@@ -35,6 +35,8 @@ def build(
     warnings: list[str] = []
     candidates: list[CalendarCandidate] = []
 
+    if settings.hv7_trigger_source == "manual_fallback":
+        warnings.append("HV7 auto-trigger unavailable; using manual trigger fallback.")
     if not settings.hv7_trigger_confirmed:
         warnings.append("HV7 trigger not confirmed: requires same-day index drop and VIX threshold before entry.")
 
@@ -71,6 +73,9 @@ def build(
     candidate.extras.update({
         "structure": "put_broken_wing_butterfly",
         "trigger_confirmed": settings.hv7_trigger_confirmed,
+        "trigger_source": settings.hv7_trigger_source,
+        "underlying_change_pct": settings.hv7_underlying_change_pct,
+        "vix_price": settings.hv7_vix_price,
         "bwb_width_upper": upper_width,
         "bwb_width_lower": lower_width,
         "target_pct": 0.05,

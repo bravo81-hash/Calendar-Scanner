@@ -266,16 +266,19 @@ class ScanSettings:
     hv7_short_delta: float = 35.0
     hv7_lower_delta: float = 20.0
     hv7_trigger_confirmed: bool = False
+    hv7_auto_detect_trigger: bool = True
+    hv7_trigger_source: str = "manual"
+    hv7_underlying_change_pct: float | None = None
+    hv7_vix_price: float | None = None
 
-    # FlyDiagonal: call BWB + put diagonal
+    # FlyDiagonal: ATM iron fly + put/call time spreads
     fly_short_dte: int = 8
     fly_long_dte: int = 15
     fly_dte_tolerance: int = 3
-    fly_call_lower_delta: float = 30.0
-    fly_call_short_delta: float = 20.0
-    fly_call_upper_delta: float = 10.0
-    fly_put_short_delta: float = 30.0
-    fly_put_strike_gap: float = 10.0
+    fly_iron_fly_width: float = 50.0
+    fly_time_spread_offset: float = 50.0
+    fly_dynamic_step: float = 5.0
+    fly_dynamic_steps: int = 2
 
     # Scoring weights (used by buddy_atm; other strategies may override)
     w_theta_debit: float = 50.0

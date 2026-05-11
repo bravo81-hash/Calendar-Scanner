@@ -48,7 +48,7 @@ class BwbStrategyTests(unittest.TestCase):
         self.assertTrue(any("HV7 trigger" in warning for warning in extras["warnings"]))
         self.assertEqual(candidates[0].extras["trigger_confirmed"], False)
 
-    def test_fly_diagonal_builds_call_bwb_plus_put_diagonal(self):
+    def test_fly_diagonal_builds_iron_fly_plus_two_time_spreads(self):
         settings = ScanSettings(strategy="fly_diagonal", symbol="SPX")
         candidates, extras = build_for("fly_diagonal")(
             "SPX", self.quotes_by_expiry, self.dte_by_expiry, settings, None, self.spot
@@ -58,10 +58,23 @@ class BwbStrategyTests(unittest.TestCase):
         self.assertEqual(len(candidates), 1)
         candidate = candidates[0]
         self.assertEqual(candidate.strategy, "fly_diagonal")
-        self.assertEqual(len(candidate.legs), 5)
-        self.assertEqual([leg.quote.right for leg in candidate.legs[:3]], ["C", "C", "C"])
-        self.assertEqual([leg.quote.right for leg in candidate.legs[3:]], ["P", "P"])
-        self.assertIn("put_diagonal_strike_gap", candidate.extras)
+        self.assertEqual(len(candidate.legs), 8)
+        self.assertEqual(
+            [(leg.action, leg.quantity, leg.quote.right) for leg in candidate.legs],
+            [
+                ("BUY", 1, "P"),
+                ("SELL", 1, "P"),
+                ("SELL", 1, "C"),
+                ("BUY", 1, "C"),
+                ("SELL", 1, "P"),
+                ("BUY", 1, "P"),
+                ("SELL", 1, "C"),
+                ("BUY", 1, "C"),
+            ],
+        )
+        self.assertEqual(candidate.extras["structure"], "atm_iron_fly_plus_put_call_time_spreads")
+        self.assertEqual(candidate.extras["iron_fly_width"], settings.fly_iron_fly_width)
+        self.assertGreaterEqual(candidate.position_theta, 0.0)
 
 
 if __name__ == "__main__":

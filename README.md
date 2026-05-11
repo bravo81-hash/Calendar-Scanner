@@ -18,8 +18,8 @@ Designed to run **alongside** the existing batman-scanner without modifying it. 
 | `time_edge_no_touch` | TimeEdge No-Touch (35Δ double cal)        | 15 / 43             | 10%      | Needs both puts AND calls |
 | `time_zone`          | TimeZone (RUT PCS + 40Δ put cal)          | 15 / 43             | 5%       | 14Δ PCS @ 20pt width + cal |
 | `a14_bwb`            | A14 Weekly put broken-wing butterfly      | ~14                 | 5%       | 50/35/20 put handles |
-| `hv7_bwb`            | HV7 event-trigger put BWB                 | 7-14                | 5%       | Requires external HV7 trigger confirmation |
-| `fly_diagonal`       | FlyDiagonal call BWB + put diagonal       | 8 / 15              | 10%      | Base 5-leg variant |
+| `hv7_bwb`            | HV7 event-trigger put BWB                 | 7-14                | 5%       | Auto-detects SPX/RUT move + VIX in live scans |
+| `fly_diagonal`       | FlyDiagonal 8-leg iron-fly/time-spread    | 8 / 15              | 10%      | ATM 50pt iron fly + OTM put/call time spreads |
 
 Each strategy's full rule set is preserved in `docs/strategies_html/` (your original HTML reference pages) and summarised in `docs/STRATEGIES.md`.
 
@@ -78,7 +78,7 @@ streamlit run app.py
 
 1. Support both rights per quote fetch (puts AND calls)
 2. ATM-centred strike windows (`spot * [0.85, 1.15]` default) instead of far-OTM bias
-3. Multi-leg multi-expiry candidates (Triple = 6 legs across 2 expiries; TimeZone = 4 legs hybrid PCS+cal; FlyDiagonal = call BWB + put diagonal)
+3. Multi-leg multi-expiry candidates (Triple = 6 legs across 2 expiries; TimeZone = 4 legs hybrid PCS+cal; FlyDiagonal = 8-leg iron fly + put/call time spreads)
 4. Put + call Black-Scholes-Merton risk chart
 5. Multi-symbol underlyings (SPX index for buddy/Triple/TimeEdge, RUT for TimeZone, SPY/QQQ for Triple)
 

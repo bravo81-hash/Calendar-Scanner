@@ -17,6 +17,7 @@ from typing import Any, Callable
 
 from scanner.contracts import days_to_expiry
 from scanner.greeks import quote_from_ticker
+from scanner.hv7_trigger import HV7TriggerSnapshot, detect_hv7_trigger
 from scanner.models import OptionQuote, ScanSettings
 from scanner.option_chain import select_candidate_strikes
 
@@ -167,6 +168,37 @@ class IBKRClient:
         price = ticker.marketPrice()
         self.ib.cancelMktData(underlying)
         return float(price) if price and price > 0 else None
+
+    def get_market_snapshot_for_symbol(self, symbol: str, exchange: str | None = None) -> dict[str, float | None]:
+        """Return current market price and prior close for an index/stock symbol."""
+        sym = symbol.upper()
+        exch, cur, kind = underlying_exchange_currency(sym)
+        if exchange:
+            exch = exchange
+        contract = Index(sym, exch, cur) if kind == "INDEX" else Stock(sym, exch, cur)
+        qualified = self.ib.qualifyContracts(contract)
+        if not qualified:
+            return {"price": None, "close": None}
+        contract = qualified[0]
+        ticker = self.ib.reqMktData(contract, "", False, False)
+        self.ib.sleep(2)
+        price = ticker.marketPrice()
+        close = getattr(ticker, "close", None)
+        self.ib.cancelMktData(contract)
+        return {
+            "price": float(price) if price and price > 0 else None,
+            "close": float(close) if close and close > 0 else None,
+        }
+
+    def detect_hv7_trigger(self, symbol: str, exchange: str | None = None) -> HV7TriggerSnapshot:
+        """Auto-detect HV7 trigger from underlying same-day move and VIX."""
+        underlying = self.get_market_snapshot_for_symbol(symbol, exchange)
+        vix = self.get_market_snapshot_for_symbol("VIX", "CBOE")
+        return detect_hv7_trigger(
+            underlying_price=underlying["price"],
+            underlying_prior_close=underlying["close"],
+            vix_price=vix["price"],
+        )
 
     def fetch_quotes_for_expiry(
         self,
