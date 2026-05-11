@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A14 Weekly Strategy | Master Trade Plan</title>
+    <style>
+        :root {
+            /* V1 Color Palette - Clean & Modern */
+            --bg-dark: #0f172a;       /* Slate 900 */
+            --bg-card: #1e293b;       /* Slate 800 */
+            --primary: #3b82f6;       /* Blue */
+            --accent: #0ea5e9;        /* Sky */
+            --success: #10b981;       /* Emerald */
+            --danger: #ef4444;        /* Red */
+            --warning: #f59e0b;       /* Amber */
+            --purple: #8b5cf6;        /* Violet */
+            --text-main: #f8fafc;     /* Slate 50 */
+            --text-muted: #94a3b8;    /* Slate 400 */
+            --border: #334155;        /* Slate 700 */
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Header Section --- */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+        h1 { font-size: 2.8rem; color: var(--text-main); margin-bottom: 10px; font-weight: 800; }
+        .subtitle { color: var(--accent); font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin-top: 35px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            border-top: 4px solid var(--primary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .stat-value { font-size: 1.8rem; font-weight: bold; display: block; line-height: 1.2; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; display: block; }
+
+        /* --- Section Styling --- */
+        section { margin-bottom: 60px; }
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+        .section-title::before {
+            content: '';
+            width: 6px;
+            height: 32px;
+            background: var(--accent);
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+
+        /* --- Card Grids --- */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .card h3 { 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            font-size: 1.2rem; 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .list-group { list-style: none; }
+        .list-group li {
+            margin-bottom: 14px;
+            padding-left: 24px;
+            position: relative;
+            font-size: 0.95rem;
+        }
+        .list-group li::before {
+            content: '•';
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+            font-size: 1.5rem;
+            line-height: 1rem;
+            top: 2px;
+        }
+
+        /* --- Structure Visualizer --- */
+        .structure-visual {
+            background: #000;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            text-align: center;
+            border: 1px solid #333;
+            margin-top: 20px;
+        }
+        .leg { padding: 8px; margin: 4px 0; border-radius: 6px; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        .leg.long { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .leg.short { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+
+        /* --- Adjustment Flowchart (The Engine) --- */
+        .flow-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        .flow-col {
+            background: rgba(30, 41, 59, 0.4);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .upside { border-top: 5px solid var(--success); }
+        .downside { border-top: 5px solid var(--danger); }
+        
+        .trigger-box {
+            background: var(--bg-card);
+            border: 1px dashed var(--text-muted);
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+        .arrow-down {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin: 15px 0;
+            opacity: 0.5;
+        }
+        .action-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .action-title { font-weight: bold; color: var(--text-main); display: block; margin-bottom: 8px; font-size: 1.05rem; }
+        .action-desc { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* --- Risk Management Grid --- */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .risk-box {
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+        .risk-big { font-size: 2.5rem; font-weight: 800; margin: 15px 0; }
+        
+        /* --- Pro Tip Tags --- */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .tag-event { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .tag-alpha { background: rgba(139, 92, 246, 0.2); color: var(--purple); }
+        .tag-hedge { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: 80px;
+            border-top: 1px solid var(--border);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Alert Box for Emergency --- */
+        .alert-urgent {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .alert-icon { font-size: 2rem; }
+
+        @media (max-width: 900px) {
+            .flow-container { grid-template-columns: 1fr; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>A14 Weekly Strategy</h1>
+        <div class="subtitle">Advanced Concepts & Tactics | Master Plan</div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-value" style="color:var(--text-main)">SPX</span>
+                <span class="stat-label">Instrument</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" style="color:var(--accent)">14 DTE</span>
+                <span class="stat-label">Entry Timing</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" style="color:var(--success)">~90%</span>
+                <span class="stat-label">Win Rate</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" style="color:var(--success)">5%</span>
+                <span class="stat-label">Target / Trade</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-value" style="color:var(--warning)">$5k+</span>
+                <span class="stat-label">Min Capital</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECTION: SETUP -->
+    <section>
+        <div class="section-title">Phase 1: Setup & Structure</div>
+        <div class="card-container">
+            <!-- Entry Protocol -->
+            <div class="card">
+                <h3><span>⚙️</span> Entry Protocol</h3>
+                <ul class="list-group">
+                    <li><strong>Timing:</strong> Friday Morning (~1 hr after open).</li>
+                    <li><strong>Allocation:</strong> Max 50% of account (keep cash reserves).</li>
+                    <li><strong>DTE:</strong> 14 Days (Standard). 7 DTE possible but higher gamma risk.</li>
+                    <li><strong>Structure:</strong> Put Broken Wing Butterfly (BWB).</li>
+                    <li><strong>Delta Goal:</strong> Flat to Slightly Negative.</li>
+                </ul>
+                <div style="background: rgba(245, 158, 11, 0.1); padding: 10px; border-radius: 6px; margin-top: 15px; border: 1px solid var(--warning);">
+                    <strong style="color:var(--warning); font-size:0.85rem;">LOW VIX PROTOCOL:</strong>
+                    <div style="font-size:0.85rem; margin-top:5px;">If standard width creates too much negative delta: Tighten to <strong>30/40</strong> and move shorts up.</div>
+                </div>
+            </div>
+            
+            <!-- Structure Visualizer -->
+            <div class="card">
+                <h3><span>🏗️</span> BWB Construction</h3>
+                <p style="color:var(--text-muted); font-size:0.9rem;">The "Tent" Structure (e.g., 40/60 width)</p>
+                <div class="structure-visual">
+                    <div class="leg long">
+                        <span>LONG 1x Put</span>
+                        <span>ATM (Upper)</span>
+                    </div>
+                    <div class="leg short">
+                        <span>SHORT 2x Put</span>
+                        <span>-40 pts</span>
+                    </div>
+                    <div class="leg long">
+                        <span>LONG 1x Put</span>
+                        <span>-60 pts</span>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted); text-align:center;">
+                    <em>Rough Deltas: 50 / 35 / 20</em>
+                </div>
+            </div>
+
+            <!-- Optional Hedges -->
+            <div class="card">
+                <h3><span>🛡️</span> Optional Hedges</h3>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="color:var(--text-main); display:block; margin-bottom:5px;">The "Black Swan" Hedge</strong>
+                    <p style="font-size:0.9rem; color:var(--text-muted);">Buy 1x cheap, far OTM Put (Short DTE). Provides Vega convexity if market crashes.</p>
+                </div>
+                
+                <div>
+                    <strong style="color:var(--text-main); display:block; margin-bottom:5px;">Execution Tip</strong>
+                    <p style="font-size:0.9rem; color:var(--text-muted);">When using calendars, ensure the Front Cycle premium (selling) is expensive relative to the Back Cycle (buying).</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: ADJUSTMENT LOGIC -->
+    <section>
+        <div class="section-title">Phase 2: The Logic Engine</div>
+        <p style="margin-bottom: 30px; color: var(--text-muted); font-size: 1.1rem;">
+            <strong>Check Time:</strong> 3:30 PM EST (30 mins before close). Avoid over-adjusting intraday.
+        </p>
+        
+        <div class="flow-container">
+            <!-- UPSIDE DEFENSE -->
+            <div class="flow-col upside">
+                <h3 style="text-align:center; color: var(--success); margin-bottom: 20px;">UPSIDE DEFENSE</h3>
+                
+                <div class="trigger-box">
+                    TRIGGER:<br>SPX > Upper Long Strike of BWB
+                </div>
+                
+                <div class="arrow-down">↓</div>
+
+                <div class="action-card">
+                    <span class="action-title">Action 1: Add Calendar Hedge</span>
+                    <span class="action-desc">Sell Front Cycle (Same Expiry) / Buy Back Cycle (7 days later). Strike ~20 pts above market. Size: 50% of BWB.</span>
+                </div>
+
+                <div class="arrow-down">↓</div>
+                
+                <div class="trigger-box" style="font-size: 0.9rem;">
+                    If SPX > New Calendar Strike
+                </div>
+                
+                <div class="arrow-down">↓</div>
+
+                <div class="action-card">
+                    <span class="action-title">Action 2: Roll Calendar Up</span>
+                    <span class="action-desc">Close old calendar. Open new one 20 pts higher. Maintain 7 day spread.</span>
+                </div>
+                
+                <div class="action-card" style="border-left-color: var(--warning);">
+                    <span class="action-title">Special Case: Gap Up</span>
+                    <span class="action-desc">If a "valley of death" forms between BWB and Calendar: Roll Upper BWB Long strikes out 7 days.</span>
+                </div>
+            </div>
+
+            <!-- DOWNSIDE DEFENSE -->
+            <div class="flow-col downside">
+                <h3 style="text-align:center; color: var(--danger); margin-bottom: 20px;">DOWNSIDE DEFENSE</h3>
+                
+                <div class="trigger-box">
+                    TRIGGER:<br>SPX approaching Left Side of "Tent"
+                </div>
+
+                <div class="arrow-down">↓</div>
+
+                <div class="action-card">
+                    <span class="action-title">Option A: "Calendarize" BWB</span>
+                    <span class="action-desc">Roll 50% of the <strong>Lower Long Legs</strong> out in time by 7 days. Adds positive Delta & Theta.</span>
+                </div>
+
+                <div class="action-card">
+                    <span class="action-title">Option B: Downside Calendar</span>
+                    <span class="action-desc">Add a Put Calendar 5-20 points BELOW current market level.</span>
+                </div>
+
+                <div class="action-card">
+                    <span class="action-title">Option C: Combine A & B</span>
+                    <span class="action-desc">For aggressive moves, implement both adjustments simultaneously.</span>
+                </div>
+
+                <div class="alert-urgent">
+                    <div class="alert-icon">🚨</div>
+                    <div>
+                        <strong style="color:var(--danger); display:block; margin-bottom:5px;">CRITICAL INTRADAY RULE</strong>
+                        <div style="font-size:0.9rem; color:var(--text-muted);">If SPX crashes <strong>BELOW the Short Strike</strong> intraday, do not wait. Roll the Lower Long BWB Strike UP immediately.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: RISK MANAGEMENT -->
+    <section>
+        <div class="section-title">Phase 3: Exit & Risk</div>
+        <div class="risk-grid">
+            <div class="risk-box" style="border-color: var(--success);">
+                <h3 style="border:none; margin:0; color:var(--success);">Profit Target</h3>
+                <div class="risk-big" style="color:var(--success);">5%</div>
+                <p style="color:var(--text-muted);">Of margin utilized. Exit anytime target is hit, even intraday.</p>
+            </div>
+
+            <div class="risk-box" style="border-color: var(--danger);">
+                <h3 style="border:none; margin:0; color:var(--danger);">Max Loss</h3>
+                <div class="risk-big" style="color:var(--danger);">~6-10%</div>
+                <p style="color:var(--text-muted);">Exit if 2 downside adjustments fail. Don't fight the trend.</p>
+            </div>
+
+            <div class="risk-box" style="border-color: var(--primary);">
+                <h3 style="border:none; margin:0; color:var(--primary);">Time Stop</h3>
+                <div class="risk-big" style="color:var(--primary);">2 DTE</div>
+                <p style="color:var(--text-muted);">Exit before final 2 days to avoid extreme Gamma risk.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION: TRADER INTEL -->
+    <section>
+        <div class="section-title">Trader Intel (Pro Tips)</div>
+        <div class="card-container">
+            <div class="card">
+                <span class="tag tag-alpha">Alpha Strategy</span>
+                <strong style="display:block; font-size:1.1rem; margin-bottom:10px;">The "Lottery Ticket"</strong>
+                <p style="color:var(--text-muted); font-size:0.95rem;">If the trade is profitable near exit, consider leaving a small piece (e.g., a 5-point wide butterfly) to expire. This creates a "free" shot at a max gain pin.</p>
+            </div>
+
+            <div class="card">
+                <span class="tag tag-event">Event Risk</span>
+                <strong style="display:block; font-size:1.1rem; margin-bottom:10px;">FOMC & CPI</strong>
+                <p style="color:var(--text-muted); font-size:0.95rem;">Avoid entering immediately before binary events. Volatility crush can hurt calendar hedges. Wait for the announcement to clear before entering.</p>
+            </div>
+
+            <div class="card">
+                <span class="tag tag-hedge">Advanced</span>
+                <strong style="display:block; font-size:1.1rem; margin-bottom:10px;">Short Duration (7 DTE)</strong>
+                <p style="color:var(--text-muted); font-size:0.95rem;">Advanced traders can compress the timeline to 7 DTE for faster Theta, but this requires significantly tighter monitoring due to Gamma exposure.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p><strong>Educational Use Only.</strong> Based on A14 Workshop Materials (Classes 1-3 + Q&A).<br>Trading options involves significant risk.</p>
+        <p style="margin-top:10px; opacity: 0.5;">Generated by Gemini AI • 2023 Workshop Data</p>
+    </footer>
+
+</div>
+
+</body>
+</html>
