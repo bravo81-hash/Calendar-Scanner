@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flyagonal Deep Dive: The Theta Bomb Strategy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-12">
+
+    <!-- Header -->
+    <header class="border-b border-slate-800 bg-slate-900/50 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="crosshair" class="w-8 h-8 text-sky-400"></i>
+                <h1 class="text-xl font-bold tracking-tight">Flyagonal <span class="font-light text-slate-400">Deep Dive</span></h1>
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-slate-400">
+                <a href="#overview" class="hover:text-sky-400 transition">Overview</a>
+                <a href="#setup" class="hover:text-sky-400 transition">Trade Setup</a>
+                <a href="#fly-diagonal" class="hover:text-sky-400 transition">8-Leg Structure</a>
+                <a href="#rules" class="hover:text-sky-400 transition">PT & SL Rules</a>
+                <a href="#adjustments" class="hover:text-sky-400 transition">Adjustments</a>
+                <a href="#variants" class="hover:text-sky-400 transition">Variants</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 space-y-12">
+
+        <!-- Hero Section -->
+        <section id="overview" class="text-center max-w-4xl mx-auto space-y-6">
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+                The <span class="gradient-text">"Theta Bomb"</span> Strategy
+            </h2>
+            <p class="text-lg text-slate-400 leading-relaxed">
+                A multi-leg options income strategy combining a Call Broken Wing Butterfly with a Put Diagonal Time Spread. The system culminates in its most advanced form: the <strong>8-Leg "Fly Diagonal"</strong>. Designed for high-probability income generation, leveraging extreme theta decay with defined risk.
+            </p>
+            <div class="flex justify-center gap-4 text-sm font-medium">
+                <div class="bg-sky-500/10 text-sky-400 px-4 py-2 rounded-full border border-sky-500/20">Win Rate: ~94%</div>
+                <div class="bg-emerald-500/10 text-emerald-400 px-4 py-2 rounded-full border border-emerald-500/20">Profit Factor: 3.59</div>
+                <div class="bg-indigo-500/10 text-indigo-400 px-4 py-2 rounded-full border border-indigo-500/20">Timeframe: 4 - 14 DTE</div>
+            </div>
+        </section>
+
+        <!-- The Setup -->
+        <section id="setup" class="scroll-mt-24">
+            <h3 class="text-2xl font-bold mb-6 flex items-center"><i data-lucide="layers" class="w-6 h-6 mr-3 text-sky-400"></i> The Core Setup (Base Flyagonal)</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Component 1 -->
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                    <h4 class="text-xl font-semibold text-sky-300 mb-2">1. The Income Engine</h4>
+                    <p class="text-sm text-slate-400 mb-4 uppercase tracking-wider font-semibold">Call Broken Wing Butterfly (BWB)</p>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-sky-400 mr-2 shrink-0"></i> <span><strong>Placement:</strong> Positioned fully above the current spot price.</span></li>
+                        <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-sky-400 mr-2 shrink-0"></i> <span><strong>Structure:</strong> Standard 50/60 point wide wings (e.g., lower wing is 50pts, upper wing is 60pts wide).</span></li>
+                        <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-sky-400 mr-2 shrink-0"></i> <span><strong>Function:</strong> Generates strong positive Theta. This is where the majority of the profit is realized.</span></li>
+                        <li class="flex items-start"><i data-lucide="check-circle-2" class="w-5 h-5 text-sky-400 mr-2 shrink-0"></i> <span><strong>Risk:</strong> Defined risk, but creates a "tent" of profitability on the upside.</span></li>
+                    </ul>
+                </div>
+
+                <!-- Component 2 -->
+                <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
+                    <h4 class="text-xl font-semibold text-indigo-300 mb-2">2. The Downside Anchor</h4>
+                    <p class="text-sm text-slate-400 mb-4 uppercase tracking-wider font-semibold">Put Diagonal / Time Spread</p>
+                    <ul class="space-y-3 text-slate-300">
+                        <li class="flex items-start"><i data-lucide="shield-check" class="w-5 h-5 text-indigo-400 mr-2 shrink-0"></i> <span><strong>Placement:</strong> Positioned fully below the current spot price.</span></li>
+                        <li class="flex items-start"><i data-lucide="shield-check" class="w-5 h-5 text-indigo-400 mr-2 shrink-0"></i> <span><strong>Structure:</strong> Standard is a 10-point drop between strikes.</span></li>
+                        <li class="flex items-start"><i data-lucide="shield-check" class="w-5 h-5 text-indigo-400 mr-2 shrink-0"></i> <span><strong>Time Gap:</strong> The short put typically expires 3 to 5 Days To Expiration (DTE) before the long put.</span></li>
+                        <li class="flex items-start"><i data-lucide="shield-check" class="w-5 h-5 text-indigo-400 mr-2 shrink-0"></i> <span><strong>Function:</strong> Acts as low-cost insurance. Widens the profit range dramatically and handles downside float or volatility spikes.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-6 glass-card rounded-2xl p-6 border-l-4 border-sky-500">
+                <h5 class="font-semibold text-white mb-2">Ideal Assets & Symbols</h5>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    <strong>SPX</strong> is the primary vehicle due to liquidity, tight bid/ask spreads, and 1256 tax advantages (60% long-term / 40% short-term capital gains). Alternatives include <strong>SPY, QQQ, RUT,</strong> and <strong>IWM</strong>. Avoid standard corporate stocks, and <strong>never trade this strategy over earnings events</strong> (overnight gaps destroy the structure).
+                </p>
+            </div>
+        </section>
+
+        <!-- The 8-Leg Fly Diagonal -->
+        <section id="fly-diagonal" class="scroll-mt-24">
+            <div class="bg-gradient-to-br from-indigo-900/40 to-fuchsia-900/30 border border-indigo-500/30 rounded-3xl p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/10 blur-3xl rounded-full translate-x-1/3 -translate-y-1/3"></div>
+                <h3 class="text-3xl font-bold mb-4 flex items-center text-white"><i data-lucide="network" class="w-8 h-8 mr-4 text-fuchsia-400"></i> The 8-Leg "Fly Diagonal" Structure</h3>
+                <p class="text-slate-300 text-lg mb-6 leading-relaxed">
+                    While the standard Flyagonal uses 5 to 6 legs (a Call BWB + Put Diagonal), the strategy evolved into an advanced variant known explicitly as the <strong>Fly Diagonal</strong>. Described by Steve as a "big old spider," this 8-leg structure creates a highly resilient, "dagger-shaped" P&L diagram designed for outsized returns in extremely short timeframes (averaging just 4 days per trade).
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-700/50">
+                        <h4 class="text-fuchsia-300 font-semibold mb-2 flex items-center"><i data-lucide="bar-chart-2" class="w-4 h-4 mr-2"></i> The Dagger Shape</h4>
+                        <p class="text-sm text-slate-400">The 8-leg configuration manipulates the T+0 line to form a distinct "dagger shape," heavily expanding the profitability tent and smoothing out the "valley of death" found in simpler butterfly structures.</p>
+                    </div>
+                    <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-700/50">
+                        <h4 class="text-fuchsia-300 font-semibold mb-2 flex items-center"><i data-lucide="award" class="w-4 h-4 mr-2"></i> Unmatched Consistency</h4>
+                        <p class="text-sm text-slate-400">In its initial live market deployment, the 8-leg Fly Diagonal achieved an incredible 100% win rate across its first 50 consecutive trades, generating rapid capital turnover.</p>
+                    </div>
+                    <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-700/50">
+                        <h4 class="text-fuchsia-300 font-semibold mb-2 flex items-center"><i data-lucide="cpu" class="w-4 h-4 mr-2"></i> Software Dependent</h4>
+                        <p class="text-sm text-slate-400">Managing 8 simultaneous option legs is too complex for basic broker platforms. Advanced modeling tools like <em>Option Traders Assistant</em> are required to track combined Greeks, import trades, and execute unified adjustments.</p>
+                    </div>
+                </div>
+
+                <div class="bg-fuchsia-500/10 border-l-4 border-fuchsia-500 p-4 rounded-r-lg text-sm text-fuchsia-100/80">
+                    <strong>Anatomy of the 8 Legs:</strong> By expanding the standard Flyagonal, this variant introduces additional staggered put and call structures (such as layering additional time spreads or breaking the Call BWB into wider, multi-cycle verticals) to entirely neutralize directional risk while hyper-accelerating theta decay.
+                </div>
+            </div>
+        </section>
+
+        <!-- Exit Rules (PT / SL) -->
+        <section id="rules" class="scroll-mt-24">
+            <h3 class="text-2xl font-bold mb-6 flex items-center"><i data-lucide="target" class="w-6 h-6 mr-3 text-rose-400"></i> Execution & Exit Rules</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Profit Targets -->
+                <div class="bg-emerald-900/20 border border-emerald-500/20 rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-emerald-500/20 p-2 rounded-lg mr-3">
+                            <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-emerald-300">Profit Targets (PT)</h4>
+                    </div>
+                    <ul class="space-y-4 text-slate-300 text-sm">
+                        <li class="p-3 bg-slate-900/50 rounded-lg">
+                            <strong class="text-white block mb-1">Standard Target: 10% - 15%</strong>
+                            The primary goal is capturing rapid theta decay. Set automated limit orders to exit the entire strategy once the position hits a 10% to 15% return on capital at risk.
+                        </li>
+                        <li class="p-3 bg-slate-900/50 rounded-lg">
+                            <strong class="text-white block mb-1">Quick Exit Rule (0-1 Days): > 4%</strong>
+                            If the trade achieves greater than a 4% profit within the first 24 hours (0-1 trading days), close it immediately. Take the fast capital and reallocate.
+                        </li>
+                        <li class="p-3 bg-slate-900/50 rounded-lg">
+                            <strong class="text-white block mb-1">Trailing Stops (Advanced):</strong>
+                            For advanced management, allow profits to run to 20-30% while the market chops under the BWB tent, using a trailing stop to close the position if profit pulls back by a set percentage.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Stop Loss & Risk -->
+                <div class="bg-rose-900/20 border border-rose-500/20 rounded-2xl p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-rose-500/20 p-2 rounded-lg mr-3">
+                            <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400"></i>
+                        </div>
+                        <h4 class="text-lg font-semibold text-rose-300">Stop Loss (SL) & Capital</h4>
+                    </div>
+                    <ul class="space-y-4 text-slate-300 text-sm">
+                        <li class="p-3 bg-slate-900/50 rounded-lg">
+                            <strong class="text-white block mb-1">Capital Allocation:</strong>
+                            Standard risk is roughly <strong>$2,500 per SPX trade</strong>. You must be comfortable having $200-$300 at risk per trade if scaling down to SPY. Max open trades are usually 3 to 4 staggered positions.
+                        </li>
+                        <li class="p-3 bg-slate-900/50 rounded-lg">
+                            <strong class="text-white block mb-1">The Stop Loss Philosophy:</strong>
+                            Because losers can be 3 to 4 times the size of average winners, proactive <em>adjustments</em> are prioritized over hard stop-loss orders. 
+                        </li>
+                        <li class="p-3 bg-slate-900/50 rounded-lg">
+                            <strong class="text-white block mb-1">Lottery Ticket Rule:</strong>
+                            When exiting the trade, if a long leg (Long Call or Long Put) has decayed to just $1 or $2 in value, leave it open. It serves as a free "lottery ticket" against black swan events. <em>Never leave a naked short open.</em>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Adjustments -->
+        <section id="adjustments" class="scroll-mt-24">
+            <h3 class="text-2xl font-bold mb-6 flex items-center"><i data-lucide="sliders" class="w-6 h-6 mr-3 text-amber-400"></i> Trade Adjustments</h3>
+            <p class="text-slate-400 mb-6">Adjustments are made to flatten out deltas when skewed, keep positive Theta in play, and control overall buying power expansion.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Upside Adjustments -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Upside Market Adjustments</h4>
+                    <p class="text-sm text-slate-400 mb-4">Triggered when the market rallies aggressively towards the BWB tent.</p>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start"><i data-lucide="arrow-up-right" class="w-4 h-4 text-amber-400 mr-2 mt-0.5 shrink-0"></i> <span><strong>Flatten Deltas:</strong> Shift the Call BWB up the options chain or widen the wings to reduce negative delta.</span></li>
+                        <li class="flex items-start"><i data-lucide="arrow-up-right" class="w-4 h-4 text-amber-400 mr-2 mt-0.5 shrink-0"></i> <span><strong>Stay under the Tent:</strong> Ensure the current price remains under the BWB peak to maintain positive theta decay.</span></li>
+                        <li class="flex items-start"><i data-lucide="arrow-up-right" class="w-4 h-4 text-amber-400 mr-2 mt-0.5 shrink-0"></i> <span><strong>Rolling:</strong> Roll the entire structure forward in time if the spot price breaches the profitability tent and theta turns negative.</span></li>
+                    </ul>
+                </div>
+
+                <!-- Downside Adjustments -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h4 class="text-xl font-semibold text-slate-200 mb-4 border-b border-slate-700 pb-2">Downside Market Adjustments</h4>
+                    <p class="text-sm text-slate-400 mb-4">Triggered when the market drops, testing the Put Diagonal insurance.</p>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start"><i data-lucide="arrow-down-right" class="w-4 h-4 text-sky-400 mr-2 mt-0.5 shrink-0"></i> <span><strong>Evaluate Diagonal Support:</strong> The Put Diagonal should increase in value as volatility and price drop, offsetting BWB losses.</span></li>
+                        <li class="flex items-start"><i data-lucide="arrow-down-right" class="w-4 h-4 text-sky-400 mr-2 mt-0.5 shrink-0"></i> <span><strong>Shift the BWB:</strong> Bring the Call BWB closer to the money (downward) to capture more premium and re-center the tent over the new price.</span></li>
+                        <li class="flex items-start"><i data-lucide="arrow-down-right" class="w-4 h-4 text-sky-400 mr-2 mt-0.5 shrink-0"></i> <span><strong>Close Stragglers:</strong> Ensure that as you adjust, you are not inadvertently expanding your buying power or leaving short legs exposed.</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-amber-900/20 text-amber-200/80 rounded-xl text-sm border border-amber-500/20 flex items-start">
+                <i data-lucide="alert-triangle" class="w-5 h-5 mr-3 shrink-0 text-amber-500"></i>
+                <p><strong>Crucial Software Note:</strong> Adjustments on an 8-leg strategy require robust modeling. Tools like <em>Option Traders Assistant</em> or <em>OptionStrat</em> are highly recommended to accurately measure how adjustments affect your T+0 line and Theta. ThinkOrSwim can be used but requires manual leg importing.</p>
+            </div>
+        </section>
+
+        <!-- Variants -->
+        <section id="variants" class="scroll-mt-24">
+            <h3 class="text-2xl font-bold mb-6 flex items-center"><i data-lucide="git-branch" class="w-6 h-6 mr-3 text-fuchsia-400"></i> Strategy Variants</h3>
+            <div class="space-y-4">
+                
+                <div class="glass-card p-5 rounded-xl flex flex-col md:flex-row md:items-center gap-4 border-l-4 border-fuchsia-500">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-white mb-1">Wide DTE Put Diagonal</h4>
+                        <p class="text-sm text-slate-300">Extends the Put Diagonal time gap from 3-5 days to <strong>7-14 days</strong>.</p>
+                        <p class="text-xs text-slate-400 mt-2"><strong>Pros/Cons:</strong> Creates a much wider safety net (valley of death is much higher) and a higher profit tent. However, it requires significantly more out-of-pocket capital to open.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-xl flex flex-col md:flex-row md:items-center gap-4 border-l-4 border-purple-500">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-bold text-white mb-1">The Conagonal & Vertagonal</h4>
+                        <p class="text-sm text-slate-300">Alternative configurations discussed in the advanced sections, altering the BWB into Condor or Vertical spreads while maintaining the diagonal anchor.</p>
+                        <p class="text-xs text-slate-400 mt-2"><strong>When to use:</strong> Employed when implied volatility skew dictates that butterfly wings are too expensive, or when targeting a wider, flatter profit zone.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Footer / Disclaimer -->
+        <footer class="mt-16 border-t border-slate-800 pt-8 pb-4 text-center">
+            <p class="text-xs text-slate-500 max-w-3xl mx-auto leading-relaxed">
+                <strong>Disclaimer of Liability:</strong> This material is based on the "Flyagonal Deep Dive" course and is for educational, paper trading, and practice purposes only. It does not constitute financial advice. Options trading involves significant risk and is not suitable for all investors. Past performance (including the cited 94% win rate) is not indicative of future results.
+            </p>
+        </footer>
+
+    </main>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
