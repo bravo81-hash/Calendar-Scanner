@@ -252,6 +252,31 @@ class ScanSettings:
     buddy_max_long_dte: int = 20
     buddy_right: str = "P"
 
+    # A14 put BWB
+    a14_dte: int = 14
+    a14_dte_tolerance: int = 2
+    a14_upper_delta: float = 50.0
+    a14_short_delta: float = 35.0
+    a14_lower_delta: float = 20.0
+
+    # HV7 put BWB
+    hv7_min_dte: int = 7
+    hv7_max_dte: int = 14
+    hv7_upper_delta: float = 50.0
+    hv7_short_delta: float = 35.0
+    hv7_lower_delta: float = 20.0
+    hv7_trigger_confirmed: bool = False
+
+    # FlyDiagonal: call BWB + put diagonal
+    fly_short_dte: int = 8
+    fly_long_dte: int = 15
+    fly_dte_tolerance: int = 3
+    fly_call_lower_delta: float = 30.0
+    fly_call_short_delta: float = 20.0
+    fly_call_upper_delta: float = 10.0
+    fly_put_short_delta: float = 30.0
+    fly_put_strike_gap: float = 10.0
+
     # Scoring weights (used by buddy_atm; other strategies may override)
     w_theta_debit: float = 50.0
     w_range_debit: float = 20.0

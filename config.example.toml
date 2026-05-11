@@ -41,5 +41,15 @@ default_target_pct = 0.10
 # the full ATM straddle. When false, the scanner can fall back to 2x ATM put mid.
 triple_require_full_straddle = false
 
+# A14 / HV7 / FlyDiagonal reference-strategy defaults
+a14_dte = 14
+a14_dte_tolerance = 2
+hv7_min_dte = 7
+hv7_max_dte = 14
+hv7_trigger_confirmed = false
+fly_short_dte = 8
+fly_long_dte = 15
+fly_dte_tolerance = 3
+
 # Quote cache freshness (minutes) before a quote is considered stale
 cache_max_age_minutes = 30

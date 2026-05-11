@@ -86,6 +86,13 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
             value=defaults.triple_require_full_straddle,
             help="Fetch calls as well as puts so Triple Calendar expected move uses ATM call mid + put mid.",
         )
+    hv7_trigger_confirmed = defaults.hv7_trigger_confirmed
+    if strategy_key == "hv7_bwb":
+        hv7_trigger_confirmed = st.sidebar.checkbox(
+            "HV7 trigger confirmed",
+            value=defaults.hv7_trigger_confirmed,
+            help="Confirm same-day index drop and VIX threshold before treating HV7 as actionable.",
+        )
 
     st.sidebar.header("DTE / Strike window")
     min_short_dte = st.sidebar.number_input("Min DTE", min_value=0, max_value=200, value=defaults.min_short_dte)
@@ -158,6 +165,7 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
         min_short_dte=int(min_short_dte), max_long_dte=int(max_long_dte),
         strategy=strategy_key,
         triple_require_full_straddle=bool(triple_require_full_straddle),
+        hv7_trigger_confirmed=bool(hv7_trigger_confirmed),
         w_theta_debit=float(w_theta), w_range_debit=float(w_range), w_days_to_target=float(w_days),
         w_vega_debit=float(w_vega), w_spread_penalty=float(w_spread),
         cache_max_age_minutes=int(cache_minutes),

@@ -56,6 +56,27 @@ SCORING_PRESETS: dict[str, dict[str, float]] = {
         "w_vega_debit": 5.0,
         "w_spread_penalty": 15.0,
     },
+    "a14_bwb": {
+        "w_theta_debit": 35.0,
+        "w_range_debit": 25.0,
+        "w_days_to_target": 15.0,
+        "w_vega_debit": 5.0,
+        "w_spread_penalty": 20.0,
+    },
+    "hv7_bwb": {
+        "w_theta_debit": 45.0,
+        "w_range_debit": 15.0,
+        "w_days_to_target": 20.0,
+        "w_vega_debit": 0.0,
+        "w_spread_penalty": 20.0,
+    },
+    "fly_diagonal": {
+        "w_theta_debit": 40.0,
+        "w_range_debit": 25.0,
+        "w_days_to_target": 15.0,
+        "w_vega_debit": 10.0,
+        "w_spread_penalty": 10.0,
+    },
 }
 
 

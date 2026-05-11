@@ -209,10 +209,11 @@ Use the **risk chart** for visual triage; do final modelling in OptionNet Explor
 
 ---
 
-## Reference strategies not yet implemented
+## Additional implemented reference strategies
 
-The following source pages are preserved in `docs/strategies_html/` for later
-scanner expansion. They are not currently registered in `strategies/registry.py`.
+The following source pages are preserved in `docs/strategies_html/` and are now
+available as selectable scanner strategies. The scanner builds initial entry
+candidates only; adjustment workflows remain documented guidance.
 
 ### A14 Weekly Strategy
 
@@ -225,7 +226,11 @@ scanner expansion. They are not currently registered in `strategies/registry.py`
 - Profit target: 5% of margin. Time stop: 2 DTE.
 - Optional hedges include far OTM puts and calendar hedges when price challenges the tent.
 
-Scanner implication: this needs a BWB builder plus margin/risk modelling. It should not be folded into the existing calendar builders.
+### Scanner mapping
+- `strategies/a14.py`
+- 3 legs: buy upper/ATM-ish put, sell 2x middle puts, buy lower put.
+- Default delta handles: 50 / 35 / 20.
+- `extras.bwb_width_upper`, `extras.bwb_width_lower`, `extras.target_pct=0.05`.
 
 ### HV7 Option Trading System
 
@@ -237,7 +242,11 @@ Scanner implication: this needs a BWB builder plus margin/risk modelling. It sho
 - Standard setup uses ATM / ~35 delta / ~20 delta put handles.
 - No adjustments. Exit before expiration day, and exit if theta becomes negative while spot is above the upper wing.
 
-Scanner implication: this needs signal inputs for SPX/RUT daily move and VIX, plus a BWB builder. It belongs as its own strategy, not as a TimeZone or TimeEdge variant.
+### Scanner mapping
+- `strategies/hv7.py`
+- 3 legs: put broken-wing butterfly using 50 / 35 / 20 handles.
+- Sidebar `HV7 trigger confirmed` checkbox records whether the external SPX/RUT down-move + VIX trigger is met.
+- If the trigger is not checked, the candidate is still shown for modelling but a warning is emitted.
 
 ### FlyDiagonal
 
@@ -249,4 +258,9 @@ Scanner implication: this needs signal inputs for SPX/RUT daily move and VIX, pl
 - Base structure: call BWB above spot plus put diagonal below spot. Advanced variant can expand to an 8-leg structure.
 - Profit target is usually 10-15%, with a quick-exit rule for early 4%+ gains.
 
-Scanner implication: this should be modelled after the shared multi-leg candidate architecture, but it needs explicit BWB + diagonal construction rules before it becomes a live builder.
+### Scanner mapping
+- `strategies/fly_diagonal.py`
+- 5-leg base variant: 3-leg call BWB plus 2-leg put diagonal.
+- Default call BWB handles: 30 / 20 / 10 delta.
+- Default put diagonal: 30-delta front short put and back long put about 10 points lower.
+- The advanced 8-leg variant is preserved in the source reference but not automated yet.

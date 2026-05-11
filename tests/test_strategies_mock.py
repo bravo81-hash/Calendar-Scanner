@@ -52,8 +52,12 @@ class StrategyMockTests(unittest.TestCase):
         self.assertEqual(len(c.legs), 2)
 
     def test_time_edge_no_touch_requires_calls(self):
-        # Mock only has puts; no-touch needs both rights
-        candidates, _ = build_te_nt("SPX", self.quotes_by_expiry, self.dte_by_expiry, self.settings, None, self.spot)
+        # No-touch needs both rights; remove calls to verify the rejection path.
+        puts_only = {
+            expiry: [quote for quote in quotes if quote.right == "P"]
+            for expiry, quotes in self.quotes_by_expiry.items()
+        }
+        candidates, _ = build_te_nt("SPX", puts_only, self.dte_by_expiry, self.settings, None, self.spot)
         # Without calls, should reject due to no_call_short
         self.assertEqual(len(candidates), 0)
 

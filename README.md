@@ -17,14 +17,11 @@ Designed to run **alongside** the existing batman-scanner without modifying it. 
 | `time_edge`          | TimeEdge main (ATM put cal)               | 15 / 22             | 10%      | Aborts if back IV − front IV > 1 pt |
 | `time_edge_no_touch` | TimeEdge No-Touch (35Δ double cal)        | 15 / 43             | 10%      | Needs both puts AND calls |
 | `time_zone`          | TimeZone (RUT PCS + 40Δ put cal)          | 15 / 43             | 5%       | 14Δ PCS @ 20pt width + cal |
+| `a14_bwb`            | A14 Weekly put broken-wing butterfly      | ~14                 | 5%       | 50/35/20 put handles |
+| `hv7_bwb`            | HV7 event-trigger put BWB                 | 7-14                | 5%       | Requires external HV7 trigger confirmation |
+| `fly_diagonal`       | FlyDiagonal call BWB + put diagonal       | 8 / 15              | 10%      | Base 5-leg variant |
 
 Each strategy's full rule set is preserved in `docs/strategies_html/` (your original HTML reference pages) and summarised in `docs/STRATEGIES.md`.
-
-Additional reference strategies are also preserved but not yet implemented as live scanner builders:
-
-- `A14.html` — SPX put broken-wing butterfly with optional calendar hedges.
-- `HV7.html` — high-volatility-event put broken-wing butterfly.
-- `FlyDiagonal.html` — call BWB plus put diagonal / time-spread family.
 
 ---
 
@@ -81,7 +78,7 @@ streamlit run app.py
 
 1. Support both rights per quote fetch (puts AND calls)
 2. ATM-centred strike windows (`spot * [0.85, 1.15]` default) instead of far-OTM bias
-3. Multi-leg multi-expiry candidates (Triple = 6 legs across 2 expiries; TimeZone = 4 legs hybrid PCS+cal)
+3. Multi-leg multi-expiry candidates (Triple = 6 legs across 2 expiries; TimeZone = 4 legs hybrid PCS+cal; FlyDiagonal = call BWB + put diagonal)
 4. Put + call Black-Scholes-Merton risk chart
 5. Multi-symbol underlyings (SPX index for buddy/Triple/TimeEdge, RUT for TimeZone, SPY/QQQ for Triple)
 

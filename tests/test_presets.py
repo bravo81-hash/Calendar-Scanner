@@ -23,6 +23,17 @@ class ScoringPresetTests(unittest.TestCase):
 
         self.assertGreater(time_zone["w_spread_penalty"], buddy["w_spread_penalty"])
 
+    def test_reference_strategy_presets_are_defined(self):
+        for strategy in ("a14_bwb", "hv7_bwb", "fly_diagonal"):
+            preset = scoring_preset_for_strategy(strategy)
+            self.assertEqual(set(preset), {
+                "w_theta_debit",
+                "w_range_debit",
+                "w_days_to_target",
+                "w_vega_debit",
+                "w_spread_penalty",
+            })
+
     def test_apply_scoring_preset_returns_updated_settings(self):
         settings = ScanSettings(strategy="time_edge", w_theta_debit=1.0)
 

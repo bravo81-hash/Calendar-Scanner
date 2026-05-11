@@ -55,6 +55,36 @@ def expiry_pair_by_target_dte(
     return None
 
 
+def expiry_by_target_dte(
+    dte_by_expiry: dict[str, int],
+    target_dte: int,
+    tolerance: int,
+) -> str | None:
+    """Pick the expiry closest to target_dte within tolerance."""
+    candidates = [
+        (exp, dte, abs(dte - target_dte))
+        for exp, dte in dte_by_expiry.items()
+        if abs(dte - target_dte) <= tolerance
+    ]
+    if not candidates:
+        return None
+    candidates.sort(key=lambda r: (r[2], r[1]))
+    return candidates[0][0]
+
+
+def first_expiry_in_dte_window(
+    dte_by_expiry: dict[str, int],
+    min_dte: int,
+    max_dte: int,
+) -> str | None:
+    """Pick the nearest expiry in an inclusive DTE window."""
+    candidates = [(exp, dte) for exp, dte in dte_by_expiry.items() if min_dte <= dte <= max_dte]
+    if not candidates:
+        return None
+    candidates.sort(key=lambda r: r[1])
+    return candidates[0][0]
+
+
 def all_expiry_pairs_within_window(
     dte_by_expiry: dict[str, int],
     short_target: int | None = None,
@@ -105,6 +135,39 @@ def build_candidate_aggregates(candidate: CalendarCandidate) -> None:
     candidate.total_theta = tt
     candidate.total_vega = tv
     candidate.total_gamma = tg
+
+
+def build_bwb_legs(
+    quotes: list[OptionQuote],
+    right: str,
+    upper_or_lower_delta: float,
+    short_delta: float,
+    far_delta: float,
+    prefix: str,
+) -> list[CalendarLeg] | None:
+    """Build a 1/-2/1 broken-wing butterfly by absolute delta.
+
+    For puts, the first long is the higher strike and the far long is lower.
+    For calls, the first long is the lower strike and the far long is higher.
+    """
+    side_quotes = [q for q in quotes if q.right.upper() == right.upper()]
+    near_long = nearest_by_abs_delta(side_quotes, upper_or_lower_delta)
+    short = nearest_by_abs_delta(side_quotes, short_delta)
+    far_long = nearest_by_abs_delta(side_quotes, far_delta)
+    if near_long is None or short is None or far_long is None:
+        return None
+    if len({near_long.strike, short.strike, far_long.strike}) < 3:
+        return None
+    if right.upper() == "P":
+        ordered = sorted([near_long, short, far_long], key=lambda q: q.strike, reverse=True)
+    else:
+        ordered = sorted([near_long, short, far_long], key=lambda q: q.strike)
+    near_long, short, far_long = ordered
+    return [
+        CalendarLeg(f"{prefix}_near_long", "BUY", 1, near_long, role=f"{prefix}_near_long"),
+        CalendarLeg(f"{prefix}_short", "SELL", 2, short, role=f"{prefix}_short"),
+        CalendarLeg(f"{prefix}_far_long", "BUY", 1, far_long, role=f"{prefix}_far_long"),
+    ]
 
 
 def expected_move_for_expiry(
