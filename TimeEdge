@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeEdge Strategy Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --accent-blue: #4da6ff;
+            --accent-green: #00c853;
+            --accent-red: #ff5252;
+            --accent-purple: #9c27b0;
+            --accent-orange: #ff9800;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--accent-blue);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: var(--accent-blue);
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease;
+            border-top: 4px solid transparent;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+
+        .icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .data-point {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .label {
+            color: var(--text-secondary);
+        }
+
+        .value {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .highlight-green { color: var(--accent-green); }
+        .highlight-red { color: var(--accent-red); }
+        .highlight-blue { color: var(--accent-blue); }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            background-color: #333;
+        }
+
+        .section-break {
+            grid-column: 1 / -1;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--accent-green);
+            padding-left: 15px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        /* Specific Card Accents */
+        .card.setup { border-top-color: var(--accent-blue); }
+        .card.rules { border-top-color: var(--accent-orange); }
+        .card.adjust { border-top-color: var(--accent-purple); }
+        .card.exit { border-top-color: var(--accent-green); }
+        .card.risk { border-top-color: var(--accent-red); }
+
+        ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #333;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>TimeEdge Strategy</h1>
+            <h2>Comprehensive Trade Plan & Rules Dashboard</h2>
+        </header>
+
+        <!-- MAIN STRATEGY SECTION -->
+        <div class="grid">
+            
+            <!-- Card 1: Core Identity -->
+            <div class="card setup">
+                <div class="card-header">
+                    <span class="icon">🎯</span>
+                    <span class="card-title">Core Identity</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Style</span>
+                    <span class="value">Neutral / Non-Directional</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Structure</span>
+                    <span class="value">Calendar / Diagonal Spreads</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Underlying</span>
+                    <span class="value">SPY (Preferred) / SPX</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Key Greeks</span>
+                    <span class="value highlight-green">+Theta, +Vega</span>
+                </div>
+            </div>
+
+            <!-- Card 2: Entry Setup -->
+            <div class="card setup">
+                <div class="card-header">
+                    <span class="icon">🚀</span>
+                    <span class="card-title">Entry Setup</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Day/Time</span>
+                    <span class="value">Thursday @ ~3:30 PM ET</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Structure</span>
+                    <span class="value">Put Calendar Spread</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Strike</span>
+                    <span class="value">At-The-Money (ATM)</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Short Leg</span>
+                    <span class="value">Front Exp (15 DTE)</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Long Leg</span>
+                    <span class="value">Back Exp (22 DTE)</span>
+                </div>
+            </div>
+
+            <!-- Card 3: When to Avoid -->
+            <div class="card risk">
+                <div class="card-header">
+                    <span class="icon">⛔</span>
+                    <span class="card-title">Abort Entry Criteria</span>
+                </div>
+                <ul>
+                    <li>Next day is a <span class="highlight-red">Market Holiday</span> (low liquidity).</li>
+                    <li>Major announcement pending (FOMC, CPI, etc.).</li>
+                    <li>Back Month Volatility is <strong>>1 point higher</strong> than Front Month.</li>
+                </ul>
+            </div>
+
+             <!-- Card 4: Management Routine -->
+             <div class="card rules">
+                <div class="card-header">
+                    <span class="icon">📅</span>
+                    <span class="card-title">Routine</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Check Frequency</span>
+                    <span class="value">Once Daily</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Check Time</span>
+                    <span class="value">~30 mins before close</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Max Adjustments</span>
+                    <span class="value highlight-red">ONE (1) Only</span>
+                </div>
+                <div style="font-size:0.85rem; color:#888; margin-top:5px;">If adjustment fails, exit the trade.</div>
+            </div>
+
+        </div>
+
+        <!-- SECTION: ADJUSTMENTS -->
+        <div class="section-break">
+            <div class="section-title">Adjustments & Management</div>
+            <div style="color: var(--text-secondary)">Trigger: Price touches the "Adjustment Area" (Breakeven/Tent Edge)</div>
+        </div>
+
+        <div class="grid">
+            
+            <!-- Card 5: Minimal Margin Adj -->
+            <div class="card adjust">
+                <div class="card-header">
+                    <span class="icon">📉</span>
+                    <span class="card-title">Method A: Minimal Margin</span>
+                </div>
+                <div style="margin-bottom: 10px; font-style: italic; color: #888;">Goal: Flatten Deltas, Low Capital Use</div>
+                <div class="data-point">
+                    <span class="label">Market Moves UP</span>
+                    <span class="value">Sell 50% Long Back Puts<br>Buy Front Puts @ Lower Strike</span>
+                </div>
+                <hr>
+                <div class="data-point">
+                    <span class="label">Market Moves DOWN</span>
+                    <span class="value">Sell 50% Long Back Puts<br>Buy Front Puts @ Higher Strike</span>
+                </div>
+                <div style="margin-top:auto; padding-top:10px;"><span class="tag">Result</span> Deltas ±1 per contract</div>
+            </div>
+
+             <!-- Card 6: Expanded Margin Adj -->
+             <div class="card adjust">
+                <div class="card-header">
+                    <span class="icon">📈</span>
+                    <span class="card-title">Method B: Expanded Margin</span>
+                </div>
+                <div style="margin-bottom: 10px; font-style: italic; color: #888;">Goal: Add Theta, Uses More Capital</div>
+                <div class="data-point">
+                    <span class="label">Market Moves UP</span>
+                    <span class="value">Add Long ATM Diagonal<br>(Sell Front ATM / Buy Back Lower)</span>
+                </div>
+                <hr>
+                <div class="data-point">
+                    <span class="label">Market Moves DOWN</span>
+                    <span class="value">Add Long ATM Diagonal<br>(Sell Front ATM / Buy Back Higher)</span>
+                </div>
+                <div style="margin-top:auto; padding-top:10px;"><span class="tag">Result</span> High +Theta, Deltas ±1</div>
+            </div>
+
+        </div>
+
+        <!-- SECTION: EXITS -->
+        <div class="section-break">
+            <div class="section-title">Exit Rules</div>
+        </div>
+
+        <div class="grid">
+            <!-- Card 7: Profit Targets -->
+            <div class="card exit">
+                <div class="card-header">
+                    <span class="icon">💰</span>
+                    <span class="card-title">Take Profit</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Base Target</span>
+                    <span class="value highlight-green">10% of Margin</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">After Min. Adj</span>
+                    <span class="value highlight-green">10% of Margin</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">After Exp. Adj</span>
+                    <span class="value highlight-green">5% of New Margin</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Flash Profit</span>
+                    <span class="value">Exit early if hit in 1-2 days</span>
+                </div>
+            </div>
+
+            <!-- Card 8: Stop Loss -->
+            <div class="card risk">
+                <div class="card-header">
+                    <span class="icon">🛑</span>
+                    <span class="card-title">Stop Loss / Defense</span>
+                </div>
+                <ul>
+                    <li><strong>Tent Breach:</strong> Exit if price leaves the profit tent.</li>
+                    <li><strong>Hard Stop:</strong> 15-20% max loss if close to expiration.</li>
+                    <li><strong>Adj. Fail:</strong> If adjusted once and tent breached again → <span class="highlight-red">EXIT</span>.</li>
+                    <li><strong>Time Stop:</strong> Must close by 1 DTE (Thursday). <span class="highlight-red">NEVER hold to expiration.</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION: BONUS STRATEGY -->
+        <div class="section-break" style="border-left-color: var(--accent-blue);">
+            <div class="section-title">Bonus: "No-Touch" Strategy</div>
+            <div style="color: var(--text-secondary)">Weekly Double Calendar (Set & Forget)</div>
+        </div>
+
+        <div class="grid">
+            <!-- Card 9: No-Touch Setup -->
+            <div class="card setup">
+                <div class="card-header">
+                    <span class="icon">✨</span>
+                    <span class="card-title">The Setup</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Entry</span>
+                    <span class="value">Thursday @ 3:30 PM</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Structure</span>
+                    <span class="value">Double Calendar</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Strikes</span>
+                    <span class="value">35 Delta (Put & Call)</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Expirations</span>
+                    <span class="value">Sell 15 DTE / Buy 43 DTE</span>
+                </div>
+            </div>
+
+            <!-- Card 10: No-Touch Rules -->
+            <div class="card rules">
+                <div class="card-header">
+                    <span class="icon">📝</span>
+                    <span class="card-title">Rules</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Management</span>
+                    <span class="value">NONE (No Adjustments)</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Profit Target</span>
+                    <span class="value highlight-green">10%</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Stop Loss</span>
+                    <span class="value highlight-red">10%</span>
+                </div>
+                <div class="data-point">
+                    <span class="label">Time Limit</span>
+                    <span class="value">Exit @ 1 DTE</span>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 50px; color: #555; font-size: 0.8rem;">
+            <p>Based on Amy Meissner's TimeEdge Workshop Materials. Educational use only.</p>
+        </footer>
+
+    </div>
+</body>
+</html>
