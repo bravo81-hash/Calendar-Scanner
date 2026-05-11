@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triple Calendar Spread Strategy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                        },
+                        brand: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tent-shape {
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+        }
+    </style>
+</head>
+<body class="antialiased p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-8">
+        
+        <!-- Header Section -->
+        <header class="glass-panel rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+                <i class="fas fa-layer-group text-9xl text-brand-500"></i>
+            </div>
+            <div class="relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-400 text-sm font-semibold mb-4 border border-blue-500/30">
+                    <i class="fas fa-shield-alt"></i> Low Risk Strategy
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4 text-white">
+                    Triple Calendar Spread
+                </h1>
+                <p class="text-lg text-slate-300 max-w-2xl leading-relaxed">
+                    A "bread and butter", market-neutral options strategy designed to generate consistent passive returns whether the market goes up, down, or sideways.
+                </p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+                <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700">
+                    <p class="text-slate-400 text-sm font-medium mb-1">Target Win Rate</p>
+                    <p class="text-2xl font-bold text-emerald-400">~80%</p>
+                </div>
+                <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700">
+                    <p class="text-slate-400 text-sm font-medium mb-1">Profit Target</p>
+                    <p class="text-2xl font-bold text-blue-400">10%</p>
+                    <p class="text-xs text-slate-500">of initial debit</p>
+                </div>
+                <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700">
+                    <p class="text-slate-400 text-sm font-medium mb-1">Avg. Time in Trade</p>
+                    <p class="text-2xl font-bold text-amber-400">2 - 10 Days</p>
+                </div>
+                <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700">
+                    <p class="text-slate-400 text-sm font-medium mb-1">Risk Profile</p>
+                    <p class="text-2xl font-bold text-indigo-400">2 / 10</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            
+            <!-- Left Column: Core Rules -->
+            <div class="md:col-span-2 space-y-8">
+                
+                <!-- Setup Mechanics -->
+                <section class="glass-panel rounded-2xl p-6 md:p-8">
+                    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fas fa-cogs text-brand-500"></i> Setup Mechanics
+                    </h2>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+                                <i class="fas fa-chart-line text-lg text-slate-300"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-medium text-white mb-1">The Underlying</h3>
+                                <p class="text-slate-400 text-sm leading-relaxed">
+                                    Highly liquid indices are preferred. <strong>QQQ</strong> is the favorite, but SPY and SPX work exceptionally well. Individual stocks near earnings should be avoided unless highly experienced.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+                                <i class="far fa-calendar-alt text-lg text-slate-300"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-medium text-white mb-1">Timeframes (DTE)</h3>
+                                <p class="text-slate-400 text-sm leading-relaxed">
+                                    Typically entered on <strong>Fridays</strong>. 
+                                    <br><span class="text-rose-400">Sell Leg:</span> 21 Days to Expiration (DTE). 
+                                    <br><span class="text-emerald-400">Buy Leg:</span> 28 Days to Expiration (DTE - One week after the sell leg).
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700">
+                                <i class="fas fa-bullseye text-lg text-slate-300"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-medium text-white mb-1">Strike Selection Rules</h3>
+                                <ul class="text-slate-400 text-sm leading-relaxed list-disc list-inside space-y-2 mt-2">
+                                    <li><strong>Middle Calendar:</strong> At-The-Money (ATM), rounded to the nearest multiple of 5 (e.g., if price is 638, use 635 or 640).</li>
+                                    <li><strong>Determine Expected Move:</strong> Look at the 21 DTE ATM Straddle price (Call + Put price combined). E.g., 25 points.</li>
+                                    <li><strong>Upper Calendar:</strong> ATM Strike + Expected Move + ~5 points margin. (e.g., 635 + 25 + 5 = 665).</li>
+                                    <li><strong>Lower Calendar:</strong> ATM Strike - Expected Move - ~5 points margin. (e.g., 635 - 25 - 5 = 605).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Visual Representation -->
+                <section class="glass-panel rounded-2xl p-6 md:p-8">
+                    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fas fa-chart-area text-brand-500"></i> Profit Zone Visualization
+                    </h2>
+                    <p class="text-slate-400 text-sm mb-6">The strategy creates three overlapping "tents" of profitability, allowing for a massive margin of error regarding directional movement.</p>
+                    
+                    <div class="relative h-48 w-full bg-slate-800/50 rounded-xl border border-slate-700 flex items-end justify-center px-4 overflow-hidden">
+                        <!-- Lower Tent -->
+                        <div class="absolute left-[10%] w-1/3 h-32 bg-rose-500/20 border-t border-l border-r border-rose-500/50 tent-shape"></div>
+                        <!-- ATM Tent -->
+                        <div class="absolute left-[33%] w-1/3 h-40 bg-blue-500/20 border-t border-l border-r border-blue-500/50 tent-shape z-10"></div>
+                        <!-- Upper Tent -->
+                        <div class="absolute right-[10%] w-1/3 h-32 bg-emerald-500/20 border-t border-l border-r border-emerald-500/50 tent-shape"></div>
+                        
+                        <!-- Base line -->
+                        <div class="absolute bottom-0 w-full h-px bg-slate-500"></div>
+                        
+                        <!-- Labels -->
+                        <div class="absolute bottom-2 left-[20%] text-xs text-slate-400 font-mono">-Expected Move</div>
+                        <div class="absolute bottom-2 left-[48%] text-xs text-slate-400 font-mono">ATM</div>
+                        <div class="absolute bottom-2 right-[20%] text-xs text-slate-400 font-mono">+Expected Move</div>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column: Exit & Management -->
+            <div class="space-y-8">
+                
+                <!-- Exit Rules -->
+                <section class="glass-panel rounded-2xl p-6 md:p-8 border-t-4 border-t-brand-500">
+                    <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fas fa-sign-out-alt text-brand-500"></i> Exit Rules
+                    </h2>
+                    
+                    <div class="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-4 mb-4">
+                        <h4 class="font-semibold text-emerald-400 mb-2 flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> Take Profit
+                        </h4>
+                        <p class="text-sm text-slate-300">
+                            Strictly take profit at <strong>10% of the initial debit paid</strong> for the spreads. Do not get greedy. Close the entire trade.
+                        </p>
+                    </div>
+
+                    <div class="bg-rose-900/20 border border-rose-500/30 rounded-xl p-4 mb-4">
+                        <h4 class="font-semibold text-rose-400 mb-2 flex items-center gap-2">
+                            <i class="fas fa-times-circle"></i> Stop Loss (Hard Time Stop)
+                        </h4>
+                        <p class="text-sm text-slate-300">
+                            No percentage stop loss. Instead, use a hard time limit. You must close the trade exactly when <strong>7 days remain</strong> until the short leg's expiration (which is exactly 14 days in the trade). Cut it regardless of P/L.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Risk Management -->
+                <section class="glass-panel rounded-2xl p-6 md:p-8">
+                    <h2 class="text-xl font-semibold mb-6 flex items-center gap-3">
+                        <i class="fas fa-exclamation-triangle text-amber-500"></i> Important Rules
+                    </h2>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-calendar-times text-rose-400 mt-1"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white">Avoid Binary Events</h4>
+                                <p class="text-xs text-slate-400 mt-1">Never sell a short leg directly ahead of FOMC meetings, CPI releases, or major earnings. Ensure events fall *between* your short and long expirations if possible.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-wave-square text-blue-400 mt-1"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white">Positive Vega Strategy</h4>
+                                <p class="text-xs text-slate-400 mt-1">This strategy benefits from rising implied volatility (VIX going up). If VIX falls heavily, profit targets will take longer to hit.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-tools text-slate-400 mt-1"></i>
+                            <div>
+                                <h4 class="text-sm font-semibold text-white">Adjustments (Advanced)</h4>
+                                <p class="text-xs text-slate-400 mt-1">If the underlying blows past your upper or lower strikes, you can add a 4th calendar spread further out. However, sticking to the 7-day hard stop is usually safer for beginners.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+            </div>
+        </div>
+
+        <footer class="text-center text-slate-500 text-sm mt-12 pb-8">
+            <p>Strategy derived from "How I Doubled My Money With Triple Calendar Spreads"</p>
+            <p class="mt-2">Disclaimer: Options trading involves significant risk. Paper trade this strategy extensively before committing real capital.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
