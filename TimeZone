@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Time Zone Options Strategy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #4ade80 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center">
+                        <i class="fa-solid fa-clock text-white text-sm"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight">The Time Zone</span>
+                </div>
+                <div class="hidden md:block text-sm text-slate-400">
+                    High Probability • Short Term • Market Neutral
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden bg-slate-900 pt-16 pb-12">
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-20">
+            <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-blue-600 blur-3xl"></div>
+            <div class="absolute top-1/2 right-0 w-64 h-64 rounded-full bg-emerald-500 blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                <span class="block">Master the</span>
+                <span class="gradient-text">Time Zone Strategy</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-400">
+                A short-term RUT options strategy targeting consistent income with minimal time in the market.
+            </p>
+            
+            <!-- Quick Stats Grid -->
+            <div class="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4 max-w-4xl mx-auto">
+                <div class="glass-panel rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Target Profit</div>
+                    <div class="text-2xl font-bold text-emerald-400">5%</div>
+                </div>
+                <div class="glass-panel rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Avg Duration</div>
+                    <div class="text-2xl font-bold text-blue-400">5 Days</div>
+                </div>
+                <div class="glass-panel rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Win Rate</div>
+                    <div class="text-2xl font-bold text-emerald-400">~75%</div>
+                </div>
+                <div class="glass-panel rounded-xl p-4 text-center">
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Min Capital</div>
+                    <div class="text-2xl font-bold text-blue-400">$7k</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+        <!-- Section 1: The Blueprint -->
+        <section>
+            <div class="flex items-center gap-2 mb-6">
+                <span class="h-px w-8 bg-blue-500"></span>
+                <h2 class="text-2xl font-bold text-white uppercase tracking-wider">01. The Blueprint</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Left: Structure Diagram -->
+                <div class="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-600/10 px-4 py-1 rounded-bl-xl text-blue-400 text-xs font-bold border-l border-b border-blue-600/20">SETUP</div>
+                    <h3 class="text-xl font-bold mb-6 text-white">Entry Structure (RUT)</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- Leg 1 -->
+                        <div class="relative pl-8 border-l-2 border-emerald-500/50">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-emerald-500"></div>
+                            <h4 class="font-bold text-emerald-400">Component A: Put Credit Spreads</h4>
+                            <p class="text-sm text-slate-400 mb-2">Income Generator</p>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><i class="fa-solid fa-layer-group w-5 text-emerald-500/70"></i> 2 Contracts (Min)</li>
+                                <li><i class="fa-solid fa-arrows-left-right w-5 text-emerald-500/70"></i> 20 Points Wide</li>
+                                <li><i class="fa-solid fa-crosshairs w-5 text-emerald-500/70"></i> Short Strike @ ~14 Delta</li>
+                                <li><i class="fa-solid fa-dollar-sign w-5 text-emerald-500/70"></i> > $1.50 Credit</li>
+                            </ul>
+                        </div>
+
+                        <!-- Leg 2 -->
+                        <div class="relative pl-8 border-l-2 border-blue-500/50">
+                            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500"></div>
+                            <h4 class="font-bold text-blue-400">Component B: Put Calendar</h4>
+                            <p class="text-sm text-slate-400 mb-2">Hedge & Vega Play</p>
+                            <ul class="space-y-1 text-sm text-slate-300">
+                                <li><i class="fa-solid fa-layer-group w-5 text-blue-500/70"></i> 2 Contracts (Min)</li>
+                                <li><i class="fa-regular fa-calendar w-5 text-blue-500/70"></i> Front: 15 DTE (~40 Delta)</li>
+                                <li><i class="fa-solid fa-calendar-check w-5 text-blue-500/70"></i> Back: ~6 Weeks Out (Same Strike)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Entry Criteria -->
+                <div class="grid gap-4">
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 card-hover transition-all duration-300">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-purple-500/10 rounded-lg text-purple-400">
+                                <i class="fa-solid fa-hourglass-half text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-200">Timing</h4>
+                                <p class="text-sm text-slate-400 mt-1">Enter at 15 DTE in the front cycle. Preferred entry is Thursday, close to end of day.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 card-hover transition-all duration-300">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-orange-500/10 rounded-lg text-orange-400">
+                                <i class="fa-solid fa-chart-line text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-200">The Greeks</h4>
+                                <p class="text-sm text-slate-400 mt-1">
+                                    <span class="inline-block px-2 py-0.5 rounded bg-slate-700 text-xs mr-1 mb-1">Theta +</span>
+                                    <span class="inline-block px-2 py-0.5 rounded bg-slate-700 text-xs mr-1 mb-1">Vega +</span>
+                                    <span class="inline-block px-2 py-0.5 rounded bg-slate-700 text-xs mr-1 mb-1">Delta Flat (<10% Theta)</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 card-hover transition-all duration-300">
+                        <div class="flex items-start gap-4">
+                            <div class="p-3 bg-pink-500/10 rounded-lg text-pink-400">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-200">Risk Profile</h4>
+                                <p class="text-sm text-slate-400 mt-1">Room to upside, but significantly more room to downside. Margin ~$3k/contract.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Management Logic -->
+        <section>
+            <div class="flex items-center gap-2 mb-6">
+                <span class="h-px w-8 bg-emerald-500"></span>
+                <h2 class="text-2xl font-bold text-white uppercase tracking-wider">02. Management Logic</h2>
+            </div>
+
+            <!-- Flowchart-ish Visuals -->
+            <div class="grid lg:grid-cols-3 gap-6">
+                
+                <!-- Upside Scenario -->
+                <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 relative group hover:bg-slate-800 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-emerald-400">Market Rallies ↗</h3>
+                        <i class="fa-solid fa-arrow-trend-up text-emerald-500/20 text-4xl group-hover:text-emerald-500/40 transition-colors"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/80 p-3 rounded border-l-4 border-yellow-500">
+                            <span class="text-xs font-bold text-yellow-500 uppercase">Trigger</span>
+                            <p class="text-sm text-slate-300">~Halfway between start & upside breakeven (Delta reaches 15-20% of Theta).</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-xs font-semibold text-slate-500 uppercase">Adjustments</p>
+                            <div class="p-2 bg-slate-700/50 rounded text-sm hover:bg-slate-700 transition">
+                                <span class="font-bold text-emerald-300">Reverse Diagonal:</span> Sell back month long / Buy lower strike front month put.
+                            </div>
+                            <div class="p-2 bg-slate-700/50 rounded text-sm hover:bg-slate-700 transition">
+                                <span class="font-bold text-emerald-300">Roll Long Put:</span> Roll back month long put down (creates PCS in back month).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Range/Choppy -->
+                <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 relative group hover:bg-slate-800 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-blue-400">Market Chops →</h3>
+                        <i class="fa-solid fa-water text-blue-500/20 text-4xl group-hover:text-blue-500/40 transition-colors"></i>
+                    </div>
+                    <div class="flex flex-col h-full justify-between pb-4">
+                        <div class="bg-slate-900/80 p-3 rounded border-l-4 border-blue-500 mb-4">
+                            <span class="text-xs font-bold text-blue-500 uppercase">Status</span>
+                            <p class="text-sm text-slate-300">Theta decay is your friend. Do nothing if within profit tent.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="inline-block p-4 rounded-full bg-slate-700/50 mb-2">
+                                <i class="fa-solid fa-sack-dollar text-2xl text-yellow-400"></i>
+                            </div>
+                            <p class="text-sm text-slate-400">Wait for 5% Target</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Downside Scenario -->
+                <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl p-6 relative group hover:bg-slate-800 transition-colors">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-red-400">Market Drops ↘</h3>
+                        <i class="fa-solid fa-arrow-trend-down text-red-500/20 text-4xl group-hover:text-red-500/40 transition-colors"></i>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/80 p-3 rounded border-l-4 border-red-500">
+                            <span class="text-xs font-bold text-red-500 uppercase">Trigger</span>
+                            <p class="text-sm text-slate-300">Before price hits the "top of the tent" (peak profit zone).</p>
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-xs font-semibold text-slate-500 uppercase">Adjustments</p>
+                            <div class="p-2 bg-slate-700/50 rounded text-sm hover:bg-slate-700 transition">
+                                <span class="font-bold text-red-300">Put Debit Spread:</span> Buy closer strike / Sell further OTM strike (Rolls short strike down).
+                            </div>
+                            <div class="p-2 bg-slate-700/50 rounded text-sm hover:bg-slate-700 transition">
+                                <span class="font-bold text-red-300">Add Hedge:</span> Add long put to flatten delta.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Rules of Engagement -->
+        <section>
+            <div class="flex items-center gap-2 mb-6">
+                <span class="h-px w-8 bg-purple-500"></span>
+                <h2 class="text-2xl font-bold text-white uppercase tracking-wider">03. Rules of Engagement</h2>
+            </div>
+            
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl border border-slate-700 p-8">
+                <div class="grid md:grid-cols-2 gap-12">
+                    
+                    <!-- Exit Rules -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-white mb-6">
+                            <i class="fa-solid fa-door-open text-purple-400"></i> Exit Protocol
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3">
+                                <i class="fa-regular fa-circle-check mt-1 text-emerald-400"></i>
+                                <div>
+                                    <span class="font-bold text-slate-200">The 5% Rule</span>
+                                    <p class="text-sm text-slate-400">Exit immediately when profit hits 5% of planned capital.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fa-regular fa-circle-xmark mt-1 text-red-400"></i>
+                                <div>
+                                    <span class="font-bold text-slate-200">The Max Loss</span>
+                                    <p class="text-sm text-slate-400">Exit if loss hits ~5%. Do not hope for reversal.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fa-regular fa-calendar-xmark mt-1 text-blue-400"></i>
+                                <div>
+                                    <span class="font-bold text-slate-200">The 7 DTE Hard Stop</span>
+                                    <p class="text-sm text-slate-400">Exit by 7 Days to Expiration. Never hold into gamma week.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Pro Tips -->
+                    <div>
+                        <h3 class="flex items-center gap-2 text-xl font-bold text-white mb-6">
+                            <i class="fa-solid fa-lightbulb text-yellow-400"></i> Pro Tips
+                        </h3>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="bg-slate-700/30 p-4 rounded-lg border border-slate-600/50">
+                                <span class="text-xs font-bold text-slate-400 uppercase">Execution</span>
+                                <p class="text-sm text-slate-200 mt-1">Enter components as spreads. Don't leg in one by one.</p>
+                            </div>
+                            <div class="bg-slate-700/30 p-4 rounded-lg border border-slate-600/50">
+                                <span class="text-xs font-bold text-slate-400 uppercase">Automation</span>
+                                <p class="text-sm text-slate-200 mt-1">Use conditional orders for emergency hedges (e.g., if RUT drops 30pts).</p>
+                            </div>
+                            <div class="bg-slate-700/30 p-4 rounded-lg border border-slate-600/50">
+                                <span class="text-xs font-bold text-slate-400 uppercase">Exiting</span>
+                                <p class="text-sm text-slate-200 mt-1">Remove risk first. If closing large positions, peel off layers to keep delta flat.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-900 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>Based on SMB Training "The Time Zone" Strategy • Educational Purposes Only</p>
+            <p class="mt-2 text-xs opacity-50">Not financial advice. Options trading involves significant risk.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
