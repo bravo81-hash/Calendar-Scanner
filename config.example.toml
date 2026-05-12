@@ -1,0 +1,60 @@
+# Calendar Scanner config example. Copy to config.local.toml and edit.
+# config.local.toml is gitignored.
+
+[ibkr]
+host = "127.0.0.1"
+port = 7497          # TWS paper. TWS live=7496, IBG paper=4002, IBG live=4001
+client_id = 13       # Distinct from batman-scanner (11)
+
+[scanner]
+# Default symbol when launching. Each strategy can override at runtime.
+symbol = "SPX"
+exchange = "CBOE"
+currency = "USD"
+
+# Strike-window for ATM-centred fetches (calendars, not far-OTM Batman).
+# Window is spot * [lower_strike_multiplier, upper_strike_multiplier]
+lower_strike_multiplier = 0.85
+upper_strike_multiplier = 1.15
+max_contracts_per_expiry = 80
+market_data_batch_size = 60
+
+# Default DTE search window (overridden per-strategy)
+min_short_dte = 1
+max_long_dte = 60
+
+# Spread filter (continuous penalty + hard cap)
+max_spread_pct_hard = 50.0    # discard contracts wider than this
+
+# Scoring weights for the buddy_atm enumerator (0-100 each, normalised internally).
+w_theta_debit = 50
+w_range_debit = 20
+w_days_to_target = 20
+w_vega_debit = 0
+w_spread_penalty = 10
+
+# Days-to-target-pct: which TP target to use for the days_to_target metric.
+# 0.05 = TimeZone 5%, 0.10 = TimeEdge/Triple 10%
+default_target_pct = 0.10
+
+# Triple Calendar: when true, fetch calls as well as puts so expected move uses
+# the full ATM straddle. When false, the scanner can fall back to 2x ATM put mid.
+triple_require_full_straddle = false
+
+# A14 / HV7 / FlyDiagonal reference-strategy defaults
+a14_dte = 14
+a14_dte_tolerance = 2
+hv7_min_dte = 7
+hv7_max_dte = 14
+hv7_trigger_confirmed = false
+hv7_auto_detect_trigger = true
+fly_short_dte = 8
+fly_long_dte = 15
+fly_dte_tolerance = 3
+fly_iron_fly_width = 50.0
+fly_time_spread_offset = 50.0
+fly_dynamic_step = 5.0
+fly_dynamic_steps = 2
+
+# Quote cache freshness (minutes) before a quote is considered stale
+cache_max_age_minutes = 30
