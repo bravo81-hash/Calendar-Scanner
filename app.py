@@ -17,7 +17,10 @@ from plotly.subplots import make_subplots
 from scanner.collector import QuoteCacheCollector
 from scanner.config import ibkr_config, load_config, settings_from_config
 from scanner.database import save_scan_history
+from scanner.earnings_beta import calculate_earnings_edge
 from scanner.export import candidates_to_csv
+from scanner.flux_history import load_flux_history, save_flux_snapshot
+from scanner.flux_metrics import classify_flux_signal
 from scanner.ibkr_client import (
     IBKRClient,
     resolve_underlying_price,
@@ -38,6 +41,8 @@ from scanner.presets import scoring_preset_for_strategy
 from scanner.regime import apply_regime, regime_summary_text, size_mult_from_conviction
 from scanner.risk_chart import candidate_risk_frame
 from scanner.scoring import rank_candidates
+from scanner.trade_management import evaluate_position_management, transformer_plan
+from scanner.vix_regime import classify_vix_regime
 from strategies.registry import REGISTRY, build_for, rights_for, target_pct_for, strategy_choices
 
 
@@ -68,8 +73,8 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
     manual_underlying_price = st.sidebar.number_input("Manual underlying price (off-hours fallback)", min_value=0.0, value=0.0, step=1.0)
 
     st.sidebar.header("Symbol")
-    symbol = st.sidebar.selectbox("Underlying", options=["SPX", "SPY", "QQQ", "RUT"], index=0).upper()
-    exchange_map = {"SPX": "CBOE", "SPY": "SMART", "QQQ": "SMART", "RUT": "RUSSELL"}
+    symbol = st.sidebar.selectbox("Underlying", options=["SPX", "SPY", "QQQ", "RUT", "AAPL", "MSFT"], index=0).upper()
+    exchange_map = {"SPX": "CBOE", "SPY": "SMART", "QQQ": "SMART", "RUT": "RUSSELL", "AAPL": "SMART", "MSFT": "SMART"}
     exchange = st.sidebar.text_input("Exchange", value=exchange_map.get(symbol, "SMART"))
 
     st.sidebar.header("Strategy")
@@ -100,6 +105,41 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
             value=defaults.hv7_trigger_confirmed,
             help="Used for mock/cache scans or when live auto-detection is unavailable.",
         )
+
+    vix_price_raw = 0.0
+    double_cal_strike_offset = defaults.double_cal_strike_offset
+    double_cal_stock_offset_pct = defaults.double_cal_stock_offset_pct
+    flux_ratio_spike_threshold = defaults.flux_ratio_spike_threshold
+    if strategy_key == "double_calendar_alpha":
+        st.sidebar.header("Flux / VIX")
+        vix_price_raw = st.sidebar.number_input(
+            "Current VIX (0 = fetch live when possible)",
+            min_value=0.0,
+            value=float(defaults.vix_price or 0.0),
+            step=0.1,
+            format="%.2f",
+        )
+        double_cal_strike_offset = st.sidebar.number_input(
+            "SPX strike offset",
+            min_value=5.0,
+            max_value=500.0,
+            value=float(defaults.double_cal_strike_offset),
+            step=5.0,
+        )
+        double_cal_stock_offset_pct = st.sidebar.number_input(
+            "ETF/stock strike offset %",
+            min_value=0.5,
+            max_value=20.0,
+            value=float(defaults.double_cal_stock_offset_pct * 100.0),
+            step=0.5,
+        ) / 100.0
+        flux_ratio_spike_threshold = st.sidebar.number_input(
+            "IV ratio spike threshold %",
+            min_value=0.5,
+            max_value=25.0,
+            value=float(defaults.flux_ratio_spike_threshold * 100.0),
+            step=0.5,
+        ) / 100.0
 
     st.sidebar.header("DTE / Strike window")
     min_short_dte = st.sidebar.number_input("Min DTE", min_value=0, max_value=200, value=defaults.min_short_dte)
@@ -177,6 +217,10 @@ def sidebar_settings(defaults: ScanSettings, ib_defaults: dict[str, Any]) -> tup
         triple_require_full_straddle=bool(triple_require_full_straddle),
         hv7_trigger_confirmed=bool(hv7_trigger_confirmed),
         hv7_auto_detect_trigger=bool(hv7_auto_detect_trigger),
+        vix_price=float(vix_price_raw) if vix_price_raw > 0 else None,
+        double_cal_strike_offset=float(double_cal_strike_offset),
+        double_cal_stock_offset_pct=float(double_cal_stock_offset_pct),
+        flux_ratio_spike_threshold=float(flux_ratio_spike_threshold),
         w_theta_debit=float(w_theta), w_range_debit=float(w_range), w_days_to_target=float(w_days),
         w_vega_debit=float(w_vega), w_spread_penalty=float(w_spread),
         cache_max_age_minutes=int(cache_minutes),
@@ -216,6 +260,9 @@ def candidate_rows(candidates: list[CalendarCandidate]) -> list[dict[str, Any]]:
             "pos_vega": round(c.position_vega, 2),
             "pos_delta": round(c.position_delta, 2),
             "avg_spread%": round(c.average_spread_pct, 2),
+            "iv_ratio": round(c.extras["iv_ratio"], 3) if c.extras.get("iv_ratio") else "",
+            "flux": c.extras.get("flux_signal", ""),
+            "mode": c.extras.get("mode", ""),
             "regime_flags": " ; ".join(c.regime_flags) if c.regime_flags else "",
         })
     return rows
@@ -281,6 +328,116 @@ def show_heatmap(extras: dict[str, Any]) -> None:
     )
     fig.update_layout(template="plotly_dark", height=420, margin={"l": 40, "r": 20, "t": 36, "b": 34})
     st.plotly_chart(fig, use_container_width=True)
+
+
+def show_flux_candidate_panel(candidate: CalendarCandidate) -> None:
+    if candidate.strategy != "double_calendar_alpha":
+        return
+    extras = candidate.extras
+    vix_regime = classify_vix_regime(extras.get("vix_price"))
+    st.subheader("Flux Engine")
+    cols = st.columns(4)
+    history = load_flux_history(candidate.symbol, candidate.front_expiry, candidate.back_expiry)
+    previous_ratio = history[-2]["iv_ratio"] if len(history) >= 2 else None
+    current_signal = classify_flux_signal(
+        extras.get("iv_ratio"),
+        float(previous_ratio) if previous_ratio is not None else None,
+    )
+    cols[0].metric("IV Ratio", f"{extras.get('iv_ratio', 0.0):.3f}" if extras.get("iv_ratio") else "n/a")
+    cols[1].metric("Flux Signal", current_signal.status)
+    cols[2].metric("Mode", str(extras.get("mode", "n/a")))
+    cols[3].metric("VIX Regime", str(extras.get("vix_regime") or vix_regime.name))
+    st.caption(current_signal.reason)
+    st.info(str(extras.get("vix_message", "")))
+    if history:
+        frame = pd.DataFrame(history)
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=frame["created_at"], y=frame["iv_ratio"], mode="lines+markers", name="IV Ratio"))
+        fig.update_layout(height=260, template="plotly_dark", margin={"l": 30, "r": 20, "t": 20, "b": 30})
+        st.plotly_chart(fig, use_container_width=True)
+
+
+def show_trade_management_utility() -> None:
+    st.subheader("Trade Management / Transformer")
+    mgmt_col, trans_col = st.columns(2, gap="large")
+    with mgmt_col:
+        st.markdown("**Position Alerts**")
+        entry_debit = st.number_input("Entry debit", min_value=0.0, value=10.0, step=0.25, key="tm_entry")
+        current_value = st.number_input("Current close value", min_value=0.0, value=8.0, step=0.25, key="tm_current")
+        front_dte = st.number_input("Front DTE", min_value=0, max_value=60, value=3, key="tm_dte")
+        underlying = st.number_input("Underlying price", min_value=0.0, value=5800.0, step=5.0, key="tm_spot")
+        put_strike = st.number_input("Short put strike", min_value=0.0, value=5700.0, step=5.0, key="tm_put")
+        call_strike = st.number_input("Short call strike", min_value=0.0, value=5900.0, step=5.0, key="tm_call")
+        result = evaluate_position_management(entry_debit, current_value, int(front_dte), underlying, put_strike, call_strike)
+        st.metric("Profit %", f"{result.profit_pct:.1f}%")
+        for alert in result.alerts:
+            if result.stop_loss_hit or result.time_stop_hit:
+                st.warning(alert)
+            elif result.profit_target_hit:
+                st.success(alert)
+            else:
+                st.info(alert)
+    with trans_col:
+        st.markdown("**Transformer Helper**")
+        qty = st.number_input("Contracts", min_value=1, max_value=100, value=1, key="tr_qty")
+        put_wing = st.number_input("New put wing strike", min_value=0.0, value=5650.0, step=5.0, key="tr_put_wing")
+        call_wing = st.number_input("New call wing strike", min_value=0.0, value=5950.0, step=5.0, key="tr_call_wing")
+        back_put_bid = st.number_input("Back put long bid", min_value=0.0, value=12.0, step=0.25, key="tr_back_put")
+        back_call_bid = st.number_input("Back call long bid", min_value=0.0, value=12.0, step=0.25, key="tr_back_call")
+        front_put_ask = st.number_input("Front put wing ask", min_value=0.0, value=2.0, step=0.25, key="tr_front_put")
+        front_call_ask = st.number_input("Front call wing ask", min_value=0.0, value=2.0, step=0.25, key="tr_front_call")
+        plan = transformer_plan(
+            put_short_strike=put_strike,
+            call_short_strike=call_strike,
+            put_wing_strike=put_wing,
+            call_wing_strike=call_wing,
+            back_put_long_bid=back_put_bid,
+            back_call_long_bid=back_call_bid,
+            front_put_wing_ask=front_put_ask,
+            front_call_wing_ask=front_call_ask,
+            quantity=int(qty),
+        )
+        st.metric("Net transformer credit", f"{plan.net_credit:.2f}")
+        st.write("Risk funded:", "Yes" if plan.risk_funded else "No")
+        st.dataframe(pd.DataFrame(plan.legs), use_container_width=True, hide_index=True)
+
+
+def show_earnings_beta_utility() -> None:
+    st.subheader("Earnings Beta Calculator")
+    col1, col2, col3 = st.columns(3)
+    implied = col1.number_input("Market implied move", min_value=0.0, value=12.5, step=0.25, key="eb_implied")
+    historical = col2.number_input("Historical average move", min_value=0.0, value=8.0, step=0.25, key="eb_hist")
+    crush = col3.number_input("IV crush factor %", min_value=0.0, max_value=100.0, value=0.0, step=5.0, key="eb_crush")
+    result = calculate_earnings_edge(implied, historical, crush)
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Adjusted historical move", f"{result.adjusted_historical_move:.2f}")
+    c2.metric("Edge", f"{result.edge:.2f}")
+    c3.metric("Overpriced", f"{result.overpriced_pct:.1f}%")
+    if result.classification == "HEAVILY_OVERPRICED":
+        st.success("Premium is heavily overpriced versus the adjusted historical move.")
+    elif result.classification == "MODEST_EDGE":
+        st.warning("Premium is modestly overpriced; model liquidity and event risk.")
+    else:
+        st.error("Premium is not overpriced versus history.")
+
+
+def record_flux_history(result: ScanResult) -> None:
+    if result.mock or result.strategy != "double_calendar_alpha":
+        return
+    for candidate in result.candidates:
+        ratio = candidate.extras.get("iv_ratio")
+        if ratio is None:
+            continue
+        save_flux_snapshot(
+            symbol=candidate.symbol,
+            front_expiry=candidate.front_expiry,
+            back_expiry=candidate.back_expiry,
+            front_dte=candidate.front_dte,
+            back_dte=candidate.back_dte,
+            front_iv=candidate.extras.get("front_iv"),
+            back_iv=candidate.extras.get("back_iv"),
+            iv_ratio=float(ratio),
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -376,6 +533,15 @@ def run_live_scan(settings: ScanSettings, connection: dict[str, Any], regime: Re
                     status_box.warning(snapshot.reason)
             else:
                 status_box.warning(f"{snapshot.reason}; using manual HV7 fallback.")
+
+        if settings.strategy == "double_calendar_alpha" and settings.vix_price is None:
+            status_box.info("fetching VIX for Double Calendar Alpha")
+            vix_snapshot = client.get_market_snapshot_for_symbol("VIX", "CBOE")
+            if vix_snapshot["price"]:
+                settings.vix_price = float(vix_snapshot["price"])
+                status_box.info(f"VIX {settings.vix_price:.2f} loaded from IBKR")
+            else:
+                status_box.warning("Could not fetch VIX from IBKR; using informational Flux alerts.")
 
         rights = rights_for(settings.strategy, settings)
         expiries = sorted(chain.expirations)
@@ -486,10 +652,17 @@ def main() -> None:
                 result = run_cache_scan(settings, regime, connection)
             else:
                 result = run_live_scan(settings, connection, regime, status_box)
+            record_flux_history(result)
             st.session_state.scan_result = result
             status_box.success(f"Scan finished. {len(result.candidates)} candidates.")
         except Exception as e:
             status_box.error(f"Scan failed: {e}")
+
+    with st.expander("Trade Management / Transformer Utility", expanded=False):
+        show_trade_management_utility()
+
+    with st.expander("Earnings Beta Calculator", expanded=False):
+        show_earnings_beta_utility()
 
     result: ScanResult | None = st.session_state.scan_result
     if result is None:
@@ -544,6 +717,7 @@ def main() -> None:
         if selected.regime_flags:
             for flag in selected.regime_flags:
                 st.warning(flag)
+        show_flux_candidate_panel(selected)
         if spot > 0:
             show_risk_chart(selected, spot, settings)
         else:

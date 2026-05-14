@@ -77,6 +77,13 @@ SCORING_PRESETS: dict[str, dict[str, float]] = {
         "w_vega_debit": 10.0,
         "w_spread_penalty": 10.0,
     },
+    "double_calendar_alpha": {
+        "w_theta_debit": 25.0,
+        "w_range_debit": 35.0,
+        "w_days_to_target": 15.0,
+        "w_vega_debit": 15.0,
+        "w_spread_penalty": 10.0,
+    },
 }
 
 

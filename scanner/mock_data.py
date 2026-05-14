@@ -75,7 +75,7 @@ def _call(symbol: str, expiry: str, strike: float, spot: float, dte: int) -> Opt
 def build_mock_chain(symbol: str = "SPX", spot: float = 5800.0) -> tuple[dict[str, list[OptionQuote]], dict[str, int], float]:
     """Return (quotes_by_expiry, dte_by_expiry, spot)."""
     today = date.today()
-    dte_set = [3, 8, 15, 18, 22, 28, 43, 50]
+    dte_set = [3, 8, 10, 12, 15, 17, 18, 19, 22, 28, 43, 50]
     quotes_by_expiry: dict[str, list[OptionQuote]] = {}
     dte_by_expiry: dict[str, int] = {}
     # Strike grid: wide enough to cover BWB delta handles in offline tests.

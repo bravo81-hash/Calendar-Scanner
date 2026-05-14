@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Callable
 
 from scanner.models import ScanSettings
-from strategies import a14, buddy_atm, fly_diagonal, hv7, time_edge, time_zone, triple_calendar
+from strategies import a14, buddy_atm, double_calendar_alpha, fly_diagonal, hv7, time_edge, time_zone, triple_calendar
 
 
 REGISTRY: dict[str, dict] = {
@@ -56,6 +56,12 @@ REGISTRY: dict[str, dict] = {
         "build": fly_diagonal.build,
         "needed_rights": fly_diagonal.needed_rights,
         "default_target_pct": 0.10,
+    },
+    "double_calendar_alpha": {
+        "label": "Double Calendar Alpha (Flux IV ratio)",
+        "build": double_calendar_alpha.build,
+        "needed_rights": double_calendar_alpha.needed_rights,
+        "default_target_pct": 0.15,
     },
 }
 

@@ -280,6 +280,16 @@ class ScanSettings:
     fly_dynamic_step: float = 5.0
     fly_dynamic_steps: int = 2
 
+    # Double Calendar Alpha / Flux
+    double_cal_min_short_dte: int = 10
+    double_cal_max_short_dte: int = 15
+    double_cal_gap_days: int = 7
+    double_cal_strike_offset: float = 100.0
+    double_cal_stock_offset_pct: float = 0.03
+    double_cal_high_vix_threshold: float = 30.0
+    flux_ratio_spike_threshold: float = 0.03
+    vix_price: float | None = None
+
     # Scoring weights (used by buddy_atm; other strategies may override)
     w_theta_debit: float = 50.0
     w_range_debit: float = 20.0

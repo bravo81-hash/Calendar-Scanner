@@ -23,6 +23,7 @@ _STRATEGY_SCORE_FIELD = {
     "a14_bwb": "stfs_score_a14",
     "buddy_atm": "stfs_score_buddy_atm",
     "fly_diagonal": "stfs_score_flyagonal",
+    "double_calendar_alpha": "stfs_score_triple",
     "triple_calendar": "stfs_score_triple",
     "time_edge": "stfs_score_time_edge",
     "time_edge_no_touch": "stfs_score_time_edge",
